@@ -18,6 +18,12 @@ namespace Framework.Network
         {
             var bindIP = IPAddress.None;
 
+
+            if (!IPAddress.TryParse(ip, out bindIP))
+            {
+                Environment.Exit(0);
+            }
+
             try
             {
                 listener = new TcpListener(bindIP, port);

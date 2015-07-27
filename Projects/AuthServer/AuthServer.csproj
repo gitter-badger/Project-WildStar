@@ -47,7 +47,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\AuthMessageAttribute.cs" />
+    <Compile Include="Attributes\StsMessageAttribute.cs" />
     <Compile Include="AuthServer.cs" />
+    <Compile Include="Constants\Net\AuthMessage.cs" />
+    <Compile Include="Constants\Net\StsMessage.cs" />
+    <Compile Include="Network\AuthSession.cs" />
+    <Compile Include="Network\Packets\AuthPacket.cs" />
+    <Compile Include="Network\Packets\Headers\AuthHeader.cs" />
+    <Compile Include="Network\Packets\Headers\HeaderBase.cs" />
+    <Compile Include="Network\Packets\Headers\StsHeader.cs" />
+    <Compile Include="Network\Packets\PacketBase.cs" />
+    <Compile Include="Network\Packets\PacketManager.cs" />
+    <Compile Include="Network\Packets\StsPacket.cs" />
+    <Compile Include="Network\Packets\StsPackets\MiscPackets.cs" />
+    <Compile Include="Network\Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +69,9 @@
       <Project>{cc4266ac-7aed-4406-bd11-b6f217a0ba13}</Project>
       <Name>Framework</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Network\Packets\AuthPackets\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
