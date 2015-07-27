@@ -94,16 +94,16 @@ namespace AuthServer.Network
             try
             {
                 var socket = e.UserToken as Socket;
-                var recievedBytes = e.BytesTransferred;
+                var receivedBytes = e.BytesTransferred;
 
-                if (recievedBytes > 0)
+                if (receivedBytes > 0)
                 {
 
                     if (packetQueue.Count > 0)
                     {
                         var lastPacket = packetQueue.Pop();
 
-                        if (recievedBytes != lastPacket.Header.DataLength)
+                        if (receivedBytes != lastPacket.Header.DataLength)
                         {
                             Console.WriteLine("Wrong data received.");
 
@@ -112,9 +112,9 @@ namespace AuthServer.Network
                             return;
                         }
 
-                        var packetData = new byte[recievedBytes];
+                        var packetData = new byte[receivedBytes];
 
-                        Buffer.BlockCopy(dataBuffer, 0, packetData, 0, recievedBytes);
+                        Buffer.BlockCopy(dataBuffer, 0, packetData, 0, receivedBytes);
 
                         lastPacket.Data = packetData;
 
@@ -127,9 +127,9 @@ namespace AuthServer.Network
                     if (BitConverter.ToUInt32(dataBuffer, 0) == 0x54534F50)
                     {
                         {
-                            var packetData = new byte[recievedBytes];
+                            var packetData = new byte[receivedBytes];
 
-                            Buffer.BlockCopy(dataBuffer, 0, packetData, 0, recievedBytes);
+                            Buffer.BlockCopy(dataBuffer, 0, packetData, 0, receivedBytes);
 
                             PacketBase packet = null;
 
@@ -146,13 +146,13 @@ namespace AuthServer.Network
                                 packet.ReadHeader(packetInfo);
                             }
 
-                            if ((recievedBytes - packet.Header.Length) != packet.Header.DataLength)
+                            if ((receivedBytes - packet.Header.Length) != packet.Header.DataLength)
                             {
                                 packetQueue.Push(packet);
                             }
                             else
                             {
-                                recievedBytes -= packet.Header.Length;
+                                receivedBytes -= packet.Header.Length;
 
                                 ProcessPacket(packet);
                             }
