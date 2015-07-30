@@ -125,9 +125,9 @@ namespace AuthServer.Network.Packets
             }
         }
 
-        public void ReadData()
+        public void ReadData(byte[] xmlData)
         {
-            var xml = XDocument.Load(new MemoryStream(Data));
+            var xml = XDocument.Load(new MemoryStream(xmlData));
             var elementList = xml.Elements().ToList();
 
             if (elementList.Elements().Count() > 0)

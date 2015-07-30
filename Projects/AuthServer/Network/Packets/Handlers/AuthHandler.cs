@@ -113,7 +113,15 @@ namespace AuthServer.Network.Packets.Handlers
             var reply = new AuthPacket(AuthReason.OK, packet.Header.Sequence);
             var xmlData = new XmlData();
 
-            
+            xmlData.WriteElementRoot("Reply");
+
+            xmlData.WriteElement("LocationId", "");
+            xmlData.WriteElement("UserId", session.Account.Id.ToString());
+            xmlData.WriteElement("UserCenter", "");
+            xmlData.WriteElement("UserName", session.Account.LoginName);
+            xmlData.WriteElement("AccessMask", "");
+            xmlData.WriteElement("Roles", "");
+            xmlData.WriteElement("Status", "");
 
             reply.WriteXmlData(xmlData);
 

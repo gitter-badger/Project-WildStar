@@ -12,6 +12,7 @@ using Framework.Cryptography;
 using Framework.Cryptography.BNet;
 using Framework.Database.Auth;
 using Framework.Logging;
+using Framework.Misc;
 
 namespace AuthServer.Network
 {
@@ -84,9 +85,9 @@ namespace AuthServer.Network
 
                     Buffer.BlockCopy(packet.Data, packet.Header.Length, packetData, 0, packet.Header.DataLength);
 
-                    packet.Data = packetData;
+                    packet.Data.Combine(packetData);
 
-                    packet.ReadData();
+                    packet.ReadData(packetData);
 
                     PacketManager.Invoke(packet, this);
 
@@ -126,9 +127,8 @@ namespace AuthServer.Network
 
                         Buffer.BlockCopy(dataBuffer, 0, packetData, 0, receivedBytes);
 
-                        lastPacket.Data = packetData;
-
-                        lastPacket.ReadData();
+                        lastPacket.Data.Combine(packetData);
+                        lastPacket.ReadData(packetData);
 
                         ProcessPacket(lastPacket);
                     }
@@ -155,14 +155,16 @@ namespace AuthServer.Network
                         packet.ReadHeader(packetInfo);
 
                         if ((receivedBytes - packet.Header.Length) != packet.Header.DataLength)
-                        {
-                            PacketLog.Write<AuthPacket>(packet.Data, packet.Data.Length, client.RemoteEndPoint as IPEndPoint);
-
                             packetQueue.Push(packet);
-                        }
                         else
                         {
                             receivedBytes -= packet.Header.Length;
+
+                            packetData = new byte[receivedBytes];
+
+                            Buffer.BlockCopy(packet.Data, packet.Header.Length, packetData, 0, receivedBytes);
+
+                            packet.ReadData(packetData);
 
                             ProcessPacket(packet);
                         }

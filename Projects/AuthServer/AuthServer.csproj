@@ -58,6 +58,7 @@
     <Compile Include="Network\AuthSession.cs" />
     <Compile Include="Network\Packets\AuthPacket.cs" />
     <Compile Include="Network\Packets\Handlers\AuthHandler.cs" />
+    <Compile Include="Network\Packets\Handlers\GameAccountHandler.cs" />
     <Compile Include="Network\Packets\Headers\AuthHeader.cs" />
     <Compile Include="Network\Packets\PacketManager.cs" />
     <Compile Include="Network\Packets\XmlData.cs" />
