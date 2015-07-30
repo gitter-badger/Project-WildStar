@@ -18,22 +18,24 @@ namespace Framework.Network
         {
             var bindIP = IPAddress.None;
 
-
-            if (!IPAddress.TryParse(ip, out bindIP))
-            {
-                Environment.Exit(0);
-            }
+            Console.WriteLine("Starting TCP server...");
 
             try
             {
+                if (!IPAddress.TryParse(ip, out bindIP))
+                    throw new Exception("Error while parsing bind address.");
+
                 listener = new TcpListener(bindIP, port);
                 listener.Start();
 
                 if (isRunning = listener.Server.IsBound)
                     new Thread(AcceptConnection).Start(200);
+
+                Console.WriteLine("Done.");
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine($"Error: {ex}");
             }
         }
 

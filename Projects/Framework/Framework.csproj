@@ -50,13 +50,16 @@
     <Compile Include="Database\DB.cs" />
     <Compile Include="Logging\LogWriter.cs" />
     <Compile Include="Logging\PacketLog.cs" />
+    <Compile Include="Misc\Config.cs" />
     <Compile Include="Misc\Extensions.cs" />
     <Compile Include="Misc\Helper.cs" />
     <Compile Include="Network\ServerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Configs\AuthConfig.conf" />
+    <None Include="Configs\AuthServer.conf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="..\..\Libraries\LappaORM\Lappa ORM\Lappa ORM.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

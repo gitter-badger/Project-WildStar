@@ -7,6 +7,8 @@ using AuthServer.Attributes;
 using AuthServer.Constants.Net;
 using Framework.Cryptography;
 using Framework.Cryptography.BNet;
+using Framework.Database;
+using Framework.Database.Auth;
 using Framework.Misc;
 
 namespace AuthServer.Network.Packets.Handlers
@@ -16,32 +18,46 @@ namespace AuthServer.Network.Packets.Handlers
         [AuthMessage(AuthMessage.LoginStart)]
         public static void HandleAuthLoginStart(AuthPacket packet, AuthSession session)
         {
-            session.SecureRemotePassword = new SRP6a(Helper.GenerateRandomKey(8).ToHexString());
-            session.SecureRemotePassword.CalculateX("test@test", "test", true);
+            var loginName = packet["LoginName"].ToString();
 
-            var keyData = new BinaryWriter(new MemoryStream());
+            if (loginName != null && (session.Account = DB.Auth.Single<Account>(a => a.LoginName == loginName)) != null)
+            {
+                session.SecureRemotePassword = new SRP6a(session.Account.Salt, loginName, session.Account.PasswordVerifier);
+                session.SecureRemotePassword.CalculateB();
 
-            keyData.Write(session.SecureRemotePassword.S.Length);
-            keyData.Write(session.SecureRemotePassword.S);
-            keyData.Write(session.SecureRemotePassword.B.Length);
-            keyData.Write(session.SecureRemotePassword.B);
+                var keyData = new BinaryWriter(new MemoryStream());
 
-            var xmlData = new XmlData();
+                keyData.Write(session.SecureRemotePassword.S.Length);
+                keyData.Write(session.SecureRemotePassword.S);
+                keyData.Write(session.SecureRemotePassword.B.Length);
+                keyData.Write(session.SecureRemotePassword.B);
 
-            xmlData.WriteElementRoot("Reply");
-            xmlData.WriteElement("KeyData", Convert.ToBase64String(keyData.ToArray()));
+                var xmlData = new XmlData();
 
-            var reply = new AuthPacket(AuthReason.OK, packet.Header.Sequence);
+                xmlData.WriteElementRoot("Reply");
+                xmlData.WriteElement("KeyData", Convert.ToBase64String(keyData.ToArray()));
 
-            reply.WriteXmlData(xmlData);
+                var reply = new AuthPacket(AuthReason.OK, packet.Header.Sequence);
 
-            session.Send(reply);
+                reply.WriteXmlData(xmlData);
+
+                session.Send(reply);
+            }
+            else
+            {
+                // Let's use ErrBadPasswd instead of ErrAccountNotFound.
+                var reply = new AuthPacket(AuthReason.ErrBadPasswd, packet.Header.Sequence);
+
+                reply.WriteString("<Error code=\"11\" server=\"0\" module=\"0\" line=\"0\"/>\n");
+
+                session.Send(reply);
+            }
         }
 
         [AuthMessage(AuthMessage.KeyData)]
         public static void HandleAuthKeyData(AuthPacket packet, AuthSession session)
         {
-            var keyData = new BinaryReader(new MemoryStream(Convert.FromBase64String(packet.Values["KeyData"].ToString())));
+            var keyData = new BinaryReader(new MemoryStream(Convert.FromBase64String(packet["KeyData"].ToString())));
             var a = keyData.ReadBytes(keyData.ReadInt32());
             var m = keyData.ReadBytes(keyData.ReadInt32());
 
@@ -78,6 +94,8 @@ namespace AuthServer.Network.Packets.Handlers
             }
             else
             {
+                session.Account = null;
+
                 var reply = new AuthPacket(AuthReason.ErrBadPasswd, packet.Header.Sequence);
 
                 reply.WriteString("<Error code=\"11\" server=\"0\" module=\"0\" line=\"0\"/>\n");

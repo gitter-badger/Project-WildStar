@@ -10,12 +10,14 @@ using System.Text;
 using AuthServer.Network.Packets;
 using Framework.Cryptography;
 using Framework.Cryptography.BNet;
+using Framework.Database.Auth;
 using Framework.Logging;
 
 namespace AuthServer.Network
 {
     class AuthSession : IDisposable
     {
+        public Account Account { get; set; }
         public int State { get; set; }
         public SRP6a SecureRemotePassword { get; set; }
         public SARC4 ClientCrypt { get; set; }

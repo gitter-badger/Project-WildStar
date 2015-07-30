@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Attributes\AuthMessageAttribute.cs" />
     <Compile Include="AuthServer.cs" />
+    <Compile Include="Configuration\AuthConfig.cs" />
     <Compile Include="Constants\Net\AuthMessage.cs" />
     <Compile Include="Constants\Net\AuthReason.cs" />
     <Compile Include="Network\AuthSession.cs" />

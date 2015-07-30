@@ -2,11 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.IO;
 using System.Threading;
+using AuthServer.Configuration;
 using AuthServer.Network;
 using AuthServer.Network.Packets;
-using Framework.Logging;
+using Framework.Database;
 
 namespace AuthServer
 {
@@ -14,18 +14,28 @@ namespace AuthServer
     {
         static void Main(string[] args)
         {
-            Directory.CreateDirectory("./Logs/AuthServer/");
+            AuthConfig.Initialize($"./Configs/{nameof(AuthServer)}.conf");
 
-            PacketLog.Initialize("./Logs/AuthServer/", "Packets.log");
-            PacketManager.DefineMessageHandler();
+            var connString = DB.CreateConnectionString(AuthConfig.AuthDBHost, AuthConfig.AuthDBUser, AuthConfig.AuthDBPassword,
+                                                       AuthConfig.AuthDBDataBase, AuthConfig.AuthDBPort, AuthConfig.AuthDBMinPoolSize,
+                                                       AuthConfig.AuthDBMaxPoolSize, AuthConfig.AuthDBType);
 
-            using (var server = new Server("0.0.0.0", 6600))
+            Console.WriteLine("Initialize database connections...");
+
+            if (DB.Auth.Initialize(connString, AuthConfig.AuthDBType))
             {
-                Console.WriteLine("Started...");
+                Console.WriteLine("Done.");
 
-                while (true)
-                    Thread.Sleep(1);
+                using (var server = new Server(AuthConfig.BindIP, AuthConfig.BindPort))
+                {
+                    PacketManager.DefineMessageHandler();
+
+                    while (true)
+                        Thread.Sleep(1);
+                }
             }
+            else
+                Console.WriteLine("Error.");
         }
     }
 }

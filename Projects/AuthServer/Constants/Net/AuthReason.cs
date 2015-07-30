@@ -6,6 +6,7 @@ namespace AuthServer.Constants.Net
     enum AuthReason
     {
         OK = 200,
-        ErrBadPasswd = 400
+        ErrBadPasswd = 400,
+        ErrAccountNotFound = 400,
     }
 }

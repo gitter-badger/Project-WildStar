@@ -14,12 +14,25 @@ namespace AuthServer.Network.Packets
 {
     class AuthPacket
     {
+        public object this[string elementName]
+        {
+            get
+            {
+                object ret;
+
+                if (values.TryGetValue(elementName, out ret))
+                    return ret;
+
+                return null;
+            }
+        }
+
         public AuthHeader Header { get; set; }
-        public Dictionary<string, object> Values { get; set; }
         public byte[] Data { get; set; }
 
         BinaryReader readStream;
         BinaryWriter stsWriter, xmlWriter;
+        Dictionary<string, object> values;
 
         public AuthPacket(AuthReason reason = AuthReason.OK, int sequence = 0)
         {
@@ -39,7 +52,7 @@ namespace AuthServer.Network.Packets
             readStream = new BinaryReader(new MemoryStream(data));
 
             Data = data;
-            Values = new Dictionary<string, object>();
+            values = new Dictionary<string, object>();
         }
 
         public void WriteXmlData(XmlData xml)
@@ -121,9 +134,7 @@ namespace AuthServer.Network.Packets
                 elementList = xml.Element(elementList[0].Name).Elements().ToList();
 
             for (var i = 0; i < elementList.Count; i++)
-            {
-                Values.Add(elementList[i].Name.LocalName, elementList[i].Value);
-            }
+                values.Add(elementList[i].Name.LocalName, elementList[i].Value);
         }
     }
 }
