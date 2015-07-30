@@ -3,7 +3,7 @@
 
 namespace AuthServer.Constants.Net
 {
-    enum StsReason
+    enum AuthReason
     {
         OK = 200,
         ErrBadPasswd = 400

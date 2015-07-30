@@ -22,13 +22,13 @@ namespace AuthServer.Network
         public SARC4 ServerCrypt { get; set; }
 
         Socket client;
-        Stack<PacketBase> packetQueue;
+        Stack<AuthPacket> packetQueue;
         byte[] dataBuffer = new byte[0x400];
 
         public AuthSession(Socket clientSocket)
         {
             client = clientSocket;
-            packetQueue = new Stack<PacketBase>();
+            packetQueue = new Stack<AuthPacket>();
         }
 
         public void Accept()
@@ -46,7 +46,7 @@ namespace AuthServer.Network
 
         public void OnConnection(object sender, SocketAsyncEventArgs e)
         {
-            PacketLog.Write<PacketBase>(dataBuffer, e.BytesTransferred, client.RemoteEndPoint as IPEndPoint);
+            PacketLog.Write<AuthPacket>(dataBuffer, e.BytesTransferred, client.RemoteEndPoint as IPEndPoint);
 
             if (e.BytesTransferred < 256 || e.BytesTransferred > 400)
             {
@@ -74,7 +74,7 @@ namespace AuthServer.Network
                         return;
                     }
 
-                    var packet = new StsPacket(packetData);
+                    var packet = new AuthPacket(packetData);
 
                     packet.ReadHeader(packetInfo);
 
@@ -86,7 +86,7 @@ namespace AuthServer.Network
 
                     packet.ReadData();
 
-                    PacketManager.InvokeStsHandler(packet, this);
+                    PacketManager.Invoke(packet, this);
 
                     e.Completed -= OnConnection;
                     e.Completed += Process;
@@ -147,24 +147,15 @@ namespace AuthServer.Network
                     // POST
                     if (BitConverter.ToUInt32(packetData, 0) == 0x54534F50)
                     {
-                        PacketBase packet = null;
-
+                        var packet = new AuthPacket(packetData);
                         var packetInfo = GetMessageType(packetData);
-
-                        if (packetInfo.Item1 == "Sts")
-                        {
-                            packet = new StsPacket(packetData);
-                            packet.ReadHeader(packetInfo);
-                        }
-                        else if (packetInfo.Item1 == "Auth")
-                        {
-                            packet = new AuthPacket(packetData);
-                            packet.ReadHeader(packetInfo);
-                        }
+                        
+                        packet.ReadHeader(packetInfo);
 
                         if ((receivedBytes - packet.Header.Length) != packet.Header.DataLength)
                         {
-                            PacketLog.Write<PacketBase>(packet.Data, packet.Data.Length, client.RemoteEndPoint as IPEndPoint);
+                            PacketLog.Write<AuthPacket>(packet.Data, packet.Data.Length, client.RemoteEndPoint as IPEndPoint);
+
                             packetQueue.Push(packet);
                         }
                         else
@@ -186,20 +177,21 @@ namespace AuthServer.Network
             }
         }
 
-        public void ProcessPacket(PacketBase packet)
+        public void ProcessPacket(AuthPacket packet)
         {
-            PacketLog.Write<PacketBase>(packet.Data, packet.Data.Length, client.RemoteEndPoint as IPEndPoint);
+            PacketLog.Write<AuthPacket>(packet.Data, packet.Data.Length, client.RemoteEndPoint as IPEndPoint);
 
-            if (packet is StsPacket)
-                PacketManager.InvokeStsHandler((StsPacket)packet, this);
-            else if (packet is AuthPacket)
-                PacketManager.InvokeAuthHandler((AuthPacket)packet, this);
+            PacketManager.Invoke(packet, this);
         }
 
-        public void Send(PacketBase packet)
+        public void Send(AuthPacket packet)
         {
             try
             {
+                packet.Finish();
+
+                PacketLog.Write<AuthPacket>(packet.Data, packet.Data.Length, client.RemoteEndPoint as IPEndPoint);
+
                 if (ServerCrypt != null)
                     ServerCrypt.ProcessBuffer(packet.Data, packet.Data.Length);
 
@@ -213,8 +205,6 @@ namespace AuthServer.Network
                 socketEventargs.SocketFlags = SocketFlags.None;
 
                 client.SendAsync(socketEventargs);
-
-                PacketLog.Write<PacketBase>(packet.Data, packet.Data.Length, client.RemoteEndPoint as IPEndPoint);
             }
             catch
             {

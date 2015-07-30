@@ -12,14 +12,26 @@ using AuthServer.Network.Packets.Headers;
 
 namespace AuthServer.Network.Packets
 {
-    class AuthPacket : PacketBase
+    class AuthPacket
     {
-        BinaryReader readStream;
-        BinaryWriter writeStream;
+        public AuthHeader Header { get; set; }
+        public Dictionary<string, object> Values { get; set; }
+        public byte[] Data { get; set; }
 
-        public AuthPacket()
+        BinaryReader readStream;
+        BinaryWriter stsWriter, xmlWriter;
+
+        public AuthPacket(AuthReason reason = AuthReason.OK, int sequence = 0)
         {
-            writeStream = new BinaryWriter(new MemoryStream());
+            stsWriter = new BinaryWriter(new MemoryStream());
+            xmlWriter = new BinaryWriter(new MemoryStream());
+
+            WriteStringLine($"STS/1.0 {(int)reason} {reason.ToString()}");
+
+            Header = new AuthHeader
+            {
+                Sequence = (byte)sequence
+            };
         }
 
         public AuthPacket(byte[] data)
@@ -32,40 +44,57 @@ namespace AuthServer.Network.Packets
 
         public void WriteXmlData(XmlData xml)
         {
-            writeStream.Write(Encoding.UTF8.GetBytes(xml.ToString()));
-            writeStream.Write(new byte[] { 0x0A });
-
-            Finish();
+            xmlWriter.Write(Encoding.UTF8.GetBytes(xml.ToString()));
+            xmlWriter.Write(new byte[] { 0x0A });
         }
 
         public void WriteString(string data)
         {
-            writeStream.Write(Encoding.UTF8.GetBytes(data));
-
-            Finish();
+            xmlWriter.Write(Encoding.UTF8.GetBytes(data));
         }
 
-        public void WriteBytes(byte[] data)
+        void WriteStringLine(string line)
         {
-            writeStream.Write(data);
+            stsWriter.Write(Encoding.UTF8.GetBytes(line));
+            stsWriter.Write(new byte[] { 0x0D, 0x0A });
+        }
+
+        void WriteHeader(int length, int sequence)
+        {
+            WriteStringLine($"l:{length}");
+            WriteStringLine($"s:{sequence}R");
+
+            stsWriter.Write(new byte[] { 0x0D, 0x0A });
         }
 
         public void Finish()
         {
-            Data = (writeStream.BaseStream as MemoryStream).ToArray();
+            WriteHeader((int)xmlWriter.BaseStream.Length, Header.Sequence);
+
+            stsWriter.Write((xmlWriter.BaseStream as MemoryStream).ToArray());
+
+            Data = (stsWriter.BaseStream as MemoryStream).ToArray();
         }
 
-        public override void ReadHeader(Tuple<string, string[], int> headerInfo)
+        public void ReadHeader(Tuple<string, string[], int> headerInfo)
         {
-            if (headerInfo.Item2.Length >= 4)
+            if (headerInfo.Item2.Length >= 2)
             {
                 var identifier = headerInfo.Item2[0].Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
                 if (identifier.Length == 3)
                 {
                     var msgString = identifier[1].Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries)[1];
-                    var sequence = Convert.ToByte(headerInfo.Item2[1].Remove(0, 2));
-                    var length = Convert.ToUInt16(headerInfo.Item2[3].Remove(0, 2));
+                    byte sequence = 0;
+                    ushort length = 0;
+
+                    if (headerInfo.Item2.Length >= 4)
+                    {
+                        sequence = Convert.ToByte(headerInfo.Item2[1].Remove(0, 2));
+                        length = Convert.ToUInt16(headerInfo.Item2[3].Remove(0, 2));
+                    }
+                    else if (headerInfo.Item2.Length >= 2)
+                        length = Convert.ToUInt16(headerInfo.Item2[1].Remove(0, 2));
 
                     AuthMessage msg;
 
@@ -77,16 +106,15 @@ namespace AuthServer.Network.Packets
                         Message    = msg,
                         Length     = (ushort)headerInfo.Item3,
                         DataLength = length,
-                        Sequence = sequence
+                        Sequence   = sequence
                     };
                 }
             }
         }
 
-        public override void ReadData()
+        public void ReadData()
         {
             var xml = XDocument.Load(new MemoryStream(Data));
-            var header = Header as StsHeader;
             var elementList = xml.Elements().ToList();
 
             if (elementList.Elements().Count() > 0)

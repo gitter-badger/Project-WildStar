@@ -13,11 +13,11 @@ namespace AuthServer.Network.Packets.Handlers
 {
     class AuthHandler
     {
-        [AuthMessage(Constants.Net.AuthMessage.LoginStart)]
+        [AuthMessage(AuthMessage.LoginStart)]
         public static void HandleAuthLoginStart(AuthPacket packet, AuthSession session)
         {
             session.SecureRemotePassword = new SRP6a(Helper.GenerateRandomKey(8).ToHexString());
-            session.SecureRemotePassword.CalculateX("fabian@arctium.org", "test", true);
+            session.SecureRemotePassword.CalculateX("test@test", "test", true);
 
             var keyData = new BinaryWriter(new MemoryStream());
 
@@ -31,17 +31,14 @@ namespace AuthServer.Network.Packets.Handlers
             xmlData.WriteElementRoot("Reply");
             xmlData.WriteElement("KeyData", Convert.ToBase64String(keyData.ToArray()));
 
-            var sts = new StsPacket();
-            var reply = new AuthPacket();
+            var reply = new AuthPacket(AuthReason.OK, packet.Header.Sequence);
 
             reply.WriteXmlData(xmlData);
-            sts.WriteData(reply.Data.Length, packet.Header.Sequence);
 
-            session.Send(sts);
             session.Send(reply);
         }
 
-        [AuthMessage(Constants.Net.AuthMessage.KeyData)]
+        [AuthMessage(AuthMessage.KeyData)]
         public static void HandleAuthKeyData(AuthPacket packet, AuthSession session)
         {
             var keyData = new BinaryReader(new MemoryStream(Convert.FromBase64String(packet.Values["KeyData"].ToString())));
@@ -70,13 +67,10 @@ namespace AuthServer.Network.Packets.Handlers
                 xmlData.WriteElementRoot("Reply");
                 xmlData.WriteElement("KeyData", Convert.ToBase64String(SKeyData.ToArray()));
 
-                var sts = new StsPacket();
-                var reply = new AuthPacket();
+                var reply = new AuthPacket(AuthReason.OK, packet.Header.Sequence);
 
                 reply.WriteXmlData(xmlData);
-                sts.WriteData(reply.Data.Length, packet.Header.Sequence);
 
-                session.Send(sts);
                 session.Send(reply);
 
                 session.ServerCrypt = new SARC4();
@@ -84,16 +78,17 @@ namespace AuthServer.Network.Packets.Handlers
             }
             else
             {
-                var sts = new StsPacket(StsReason.ErrBadPasswd);
-                var reply = new AuthPacket();
+                var reply = new AuthPacket(AuthReason.ErrBadPasswd, packet.Header.Sequence);
 
                 reply.WriteString("<Error code=\"11\" server=\"0\" module=\"0\" line=\"0\"/>\n");
 
-                sts.WriteData(reply.Data.Length, packet.Header.Sequence);
-
-                session.Send(sts);
                 session.Send(reply);
             }
+        }
+
+        [AuthMessage(AuthMessage.LoginFinish)]
+        public static void HandleAuthLoginFinish(AuthPacket packet, AuthSession session)
+        {
         }
     }
 }

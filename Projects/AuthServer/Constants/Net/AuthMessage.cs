@@ -6,7 +6,10 @@ namespace AuthServer.Constants.Net
     public enum AuthMessage
     {
         Unknown     = -1,
-        LoginStart  = 0,
-        KeyData     = 1,
+        Connect     = 0,
+        LoginStart  = 1,
+        KeyData     = 2,
+        LoginFinish = 3,
+        Ping        = 0xFF
     }
 }
