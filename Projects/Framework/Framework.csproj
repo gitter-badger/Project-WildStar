@@ -46,6 +46,8 @@
     <Compile Include="Cryptography\PacketCrypt.cs" />
     <Compile Include="Cryptography\SARC4.cs" />
     <Compile Include="Cryptography\SRP6a.cs" />
+    <Compile Include="Database\Auth\Account.cs" />
+    <Compile Include="Database\DB.cs" />
     <Compile Include="Logging\LogWriter.cs" />
     <Compile Include="Logging\PacketLog.cs" />
     <Compile Include="Misc\Extensions.cs" />
@@ -53,7 +55,9 @@
     <Compile Include="Network\ServerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Configs\AuthConfig.conf" />
+  </ItemGroup>
   <Import Project="..\..\Libraries\LappaORM\Lappa ORM\Lappa ORM.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
