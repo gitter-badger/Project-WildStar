@@ -47,6 +47,7 @@
     <Compile Include="Cryptography\SARC4.cs" />
     <Compile Include="Cryptography\SRP6a.cs" />
     <Compile Include="Database\Auth\Account.cs" />
+    <Compile Include="Database\Auth\GameAccount.cs" />
     <Compile Include="Database\DB.cs" />
     <Compile Include="Logging\LogWriter.cs" />
     <Compile Include="Logging\PacketLog.cs" />

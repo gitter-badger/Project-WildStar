@@ -15,7 +15,19 @@ namespace AuthServer.Network.Packets.Handlers
 
             if (userId == session.Account.Id)
             {
-                // ...
+                var reply = new AuthPacket(AuthReason.OK, packet.Header.Sequence);
+                var xmlData = new XmlData();
+
+                // Only 1 GameAccount supported for now.
+                xmlData.WriteElementRoot("Reply");
+                xmlData.WriteCustom("<GameAccount>\n");
+                xmlData.WriteElement("Alias", $"{session.Account.GameAccounts[0].Alias}");
+                xmlData.WriteElement("Created", "");
+                xmlData.WriteCustom("</GameAccount>\n");
+
+                reply.WriteXmlData(xmlData);
+
+                session.Send(reply);
             }
         }
     }

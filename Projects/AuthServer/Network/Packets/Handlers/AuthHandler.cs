@@ -127,5 +127,20 @@ namespace AuthServer.Network.Packets.Handlers
 
             session.Send(reply);
         }
+
+        [AuthMessage(AuthMessage.RequestGameToken)]
+        public static void HandleAuthRequestGameToken(AuthPacket packet, AuthSession session)
+        {
+            var reply = new AuthPacket(AuthReason.OK, packet.Header.Sequence);
+            var xmlData = new XmlData();
+
+            xmlData.WriteElementRoot("Reply");
+
+            xmlData.WriteElement("Token", "");
+
+            reply.WriteXmlData(xmlData);
+
+            session.Send(reply);
+        }
     }
 }

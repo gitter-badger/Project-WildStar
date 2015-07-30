@@ -164,7 +164,8 @@ namespace AuthServer.Network
 
                             Buffer.BlockCopy(packet.Data, packet.Header.Length, packetData, 0, receivedBytes);
 
-                            packet.ReadData(packetData);
+                            if (packetData.Length > 0)
+                                packet.ReadData(packetData);
 
                             ProcessPacket(packet);
                         }

@@ -2,10 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AuthServer.Attributes;
 using Framework.Cryptography.BNet;
 using Framework.Database;
@@ -42,7 +38,16 @@ namespace AuthServer.ConsoleCommands
                         Salt = salt
                     };
 
-                    if (DB.Auth.Add(account))
+                    var accountId = DB.Auth.GetAutoIncrementValue<Account, uint>();
+                    var gameAccountId = DB.Auth.GetAutoIncrementValue<GameAccount, uint>();
+
+                    var gameAccount = new GameAccount
+                    {
+                        AccountId = accountId,
+                        Alias     = $"{accountId}#{gameAccountId}",
+                    };
+
+                    if (DB.Auth.Add(account) && DB.Auth.Add(gameAccount))
                         Console.WriteLine($"Account 'Email: {email}, LoginName: {loginName}' successfully created.");
                 }
                 else

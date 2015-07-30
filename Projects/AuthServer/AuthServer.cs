@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Threading;
 using AuthServer.Configuration;
 using AuthServer.ConsoleCommands;
 using AuthServer.Network;

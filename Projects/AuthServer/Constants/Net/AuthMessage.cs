@@ -5,12 +5,13 @@ namespace AuthServer.Constants.Net
 {
     public enum AuthMessage
     {
-        Unknown        = -1,
-        Connect        = 0,
-        LoginStart     = 1,
-        KeyData        = 2,
-        LoginFinish    = 3,
-        ListMyAccounts = 4,
-        Ping           = 0xFF
+        Unknown          = -1,
+        Connect          = 0,
+        LoginStart       = 1,
+        KeyData          = 2,
+        LoginFinish      = 3,
+        ListMyAccounts   = 4,
+        RequestGameToken = 5,
+        Ping             = 0xFF
     }
 }

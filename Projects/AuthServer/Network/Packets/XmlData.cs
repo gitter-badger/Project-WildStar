@@ -44,10 +44,15 @@ namespace AuthServer.Network.Packets
             xmlWriter.WriteAttributeString(attribute, data);
         }
 
+        public void WriteCustom(string data)
+        {
+            xmlWriter.WriteRaw(data);
+        }
+
         public override string ToString()
         {
-            xmlWriter.WriteEndElement();
-            xmlWriter.WriteEndDocument();
+            //xmlWriter.WriteEndElement();
+            //xmlWriter.WriteEndDocument();
 
             xmlWriter.Flush();
             xmlWriter.Close();
