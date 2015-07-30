@@ -8,12 +8,19 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using AuthServer.Network.Packets;
+using Framework.Cryptography;
+using Framework.Cryptography.BNet;
 using Framework.Logging;
 
 namespace AuthServer.Network
 {
     class AuthSession : IDisposable
     {
+        public int State { get; set; }
+        public SRP6a SecureRemotePassword { get; set; }
+        public SARC4 ClientCrypt { get; set; }
+        public SARC4 ServerCrypt { get; set; }
+
         Socket client;
         Stack<PacketBase> packetQueue;
         byte[] dataBuffer = new byte[0x400];
@@ -26,15 +33,15 @@ namespace AuthServer.Network
 
         public void Accept()
         {
-            var socketEventargs = new SocketAsyncEventArgs();
+            var socketEventArgs = new SocketAsyncEventArgs();
 
-            socketEventargs.SetBuffer(dataBuffer, 0, dataBuffer.Length);
+            socketEventArgs.SetBuffer(dataBuffer, 0, dataBuffer.Length);
 
-            socketEventargs.Completed += OnConnection;
-            socketEventargs.UserToken = client;
-            socketEventargs.SocketFlags = SocketFlags.None;
+            socketEventArgs.Completed += OnConnection;
+            socketEventArgs.UserToken = client;
+            socketEventArgs.SocketFlags = SocketFlags.None;
 
-            client.ReceiveAsync(socketEventargs);
+            client.ReceiveAsync(socketEventArgs);
         }
 
         public void OnConnection(object sender, SocketAsyncEventArgs e)
@@ -98,6 +105,7 @@ namespace AuthServer.Network
 
                 if (receivedBytes > 0)
                 {
+                    byte[] packetData = null;
 
                     if (packetQueue.Count > 0)
                     {
@@ -112,7 +120,7 @@ namespace AuthServer.Network
                             return;
                         }
 
-                        var packetData = new byte[receivedBytes];
+                        packetData = new byte[receivedBytes];
 
                         Buffer.BlockCopy(dataBuffer, 0, packetData, 0, receivedBytes);
 
@@ -123,42 +131,49 @@ namespace AuthServer.Network
                         ProcessPacket(lastPacket);
                     }
 
-                    // POST
-                    if (BitConverter.ToUInt32(dataBuffer, 0) == 0x54534F50)
+                    if (ClientCrypt != null)
                     {
-                        {
-                            var packetData = new byte[receivedBytes];
+                        if (receivedBytes <= 100)
+                            State = 0;
 
-                            Buffer.BlockCopy(dataBuffer, 0, packetData, 0, receivedBytes);
-
-                            PacketBase packet = null;
-
-                            var packetInfo = GetMessageType(packetData);
-
-                            if (packetInfo.Item1 == "Sts")
-                            {
-                                packet = new StsPacket(packetData);
-                                packet.ReadHeader(packetInfo);
-                            }
-                            else if (packetInfo.Item1 == "Auth")
-                            {
-                                packet = new AuthPacket(packetData);
-                                packet.ReadHeader(packetInfo);
-                            }
-
-                            if ((receivedBytes - packet.Header.Length) != packet.Header.DataLength)
-                            {
-                                packetQueue.Push(packet);
-                            }
-                            else
-                            {
-                                receivedBytes -= packet.Header.Length;
-
-                                ProcessPacket(packet);
-                            }
-                        }
+                        if (State == 0)
+                            ClientCrypt.ProcessBuffer(dataBuffer, receivedBytes);
                     }
 
+                    packetData = new byte[receivedBytes];
+
+                    Buffer.BlockCopy(dataBuffer, 0, packetData, 0, receivedBytes);
+
+                    // POST
+                    if (BitConverter.ToUInt32(packetData, 0) == 0x54534F50)
+                    {
+                        PacketBase packet = null;
+
+                        var packetInfo = GetMessageType(packetData);
+
+                        if (packetInfo.Item1 == "Sts")
+                        {
+                            packet = new StsPacket(packetData);
+                            packet.ReadHeader(packetInfo);
+                        }
+                        else if (packetInfo.Item1 == "Auth")
+                        {
+                            packet = new AuthPacket(packetData);
+                            packet.ReadHeader(packetInfo);
+                        }
+
+                        if ((receivedBytes - packet.Header.Length) != packet.Header.DataLength)
+                        {
+                            PacketLog.Write<PacketBase>(packet.Data, packet.Data.Length, client.RemoteEndPoint as IPEndPoint);
+                            packetQueue.Push(packet);
+                        }
+                        else
+                        {
+                            receivedBytes -= packet.Header.Length;
+
+                            ProcessPacket(packet);
+                        }
+                    }
 
                     client.ReceiveAsync(e);
                 }
@@ -185,6 +200,9 @@ namespace AuthServer.Network
         {
             try
             {
+                if (ServerCrypt != null)
+                    ServerCrypt.ProcessBuffer(packet.Data, packet.Data.Length);
+
                 var socketEventargs = new SocketAsyncEventArgs();
 
                 socketEventargs.SetBuffer(packet.Data, 0, packet.Data.Length);

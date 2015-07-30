@@ -1,12 +1,9 @@
 ﻿// Copyright (c) Multi-Emu.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace AuthServer.Constants.Net
+namespace Framework.Cryptography
 {
-    public enum AuthMessage
+    class PacketCrypt
     {
-        Unknown     = -1,
-        LoginStart  = 0,
-        KeyData     = 1,
     }
 }

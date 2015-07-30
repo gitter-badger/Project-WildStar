@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,11 +43,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cryptography\PacketCrypt.cs" />
+    <Compile Include="Cryptography\SARC4.cs" />
+    <Compile Include="Cryptography\SRP6a.cs" />
     <Compile Include="Logging\LogWriter.cs" />
     <Compile Include="Logging\PacketLog.cs" />
+    <Compile Include="Misc\Extensions.cs" />
+    <Compile Include="Misc\Helper.cs" />
     <Compile Include="Network\ServerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\..\Libraries\LappaORM\Lappa ORM\Lappa ORM.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

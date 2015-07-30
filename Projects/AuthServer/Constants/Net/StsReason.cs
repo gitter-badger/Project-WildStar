@@ -3,10 +3,9 @@
 
 namespace AuthServer.Constants.Net
 {
-    public enum AuthMessage
+    enum StsReason
     {
-        Unknown     = -1,
-        LoginStart  = 0,
-        KeyData     = 1,
+        OK = 200,
+        ErrBadPasswd = 400
     }
 }

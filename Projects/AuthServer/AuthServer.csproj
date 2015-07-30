@@ -52,15 +52,18 @@
     <Compile Include="AuthServer.cs" />
     <Compile Include="Constants\Net\AuthMessage.cs" />
     <Compile Include="Constants\Net\StsMessage.cs" />
+    <Compile Include="Constants\Net\StsReason.cs" />
     <Compile Include="Network\AuthSession.cs" />
     <Compile Include="Network\Packets\AuthPacket.cs" />
+    <Compile Include="Network\Packets\Handlers\AuthHandler.cs" />
     <Compile Include="Network\Packets\Headers\AuthHeader.cs" />
     <Compile Include="Network\Packets\Headers\HeaderBase.cs" />
     <Compile Include="Network\Packets\Headers\StsHeader.cs" />
     <Compile Include="Network\Packets\PacketBase.cs" />
     <Compile Include="Network\Packets\PacketManager.cs" />
     <Compile Include="Network\Packets\StsPacket.cs" />
-    <Compile Include="Network\Packets\StsPackets\MiscPackets.cs" />
+    <Compile Include="Network\Packets\Handlers\StsHandler.cs" />
+    <Compile Include="Network\Packets\XmlData.cs" />
     <Compile Include="Network\Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

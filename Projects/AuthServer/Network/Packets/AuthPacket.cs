@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml.Linq;
 using AuthServer.Constants.Net;
 using AuthServer.Network.Packets.Headers;
@@ -14,7 +15,12 @@ namespace AuthServer.Network.Packets
     class AuthPacket : PacketBase
     {
         BinaryReader readStream;
-        //BinaryWriter writeStream;
+        BinaryWriter writeStream;
+
+        public AuthPacket()
+        {
+            writeStream = new BinaryWriter(new MemoryStream());
+        }
 
         public AuthPacket(byte[] data)
         {
@@ -22,6 +28,31 @@ namespace AuthServer.Network.Packets
 
             Data = data;
             Values = new Dictionary<string, object>();
+        }
+
+        public void WriteXmlData(XmlData xml)
+        {
+            writeStream.Write(Encoding.UTF8.GetBytes(xml.ToString()));
+            writeStream.Write(new byte[] { 0x0A });
+
+            Finish();
+        }
+
+        public void WriteString(string data)
+        {
+            writeStream.Write(Encoding.UTF8.GetBytes(data));
+
+            Finish();
+        }
+
+        public void WriteBytes(byte[] data)
+        {
+            writeStream.Write(data);
+        }
+
+        public void Finish()
+        {
+            Data = (writeStream.BaseStream as MemoryStream).ToArray();
         }
 
         public override void ReadHeader(Tuple<string, string[], int> headerInfo)

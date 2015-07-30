@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml.Linq;
 using AuthServer.Constants.Net;
 using AuthServer.Network.Packets.Headers;
@@ -14,7 +15,14 @@ namespace AuthServer.Network.Packets
     class StsPacket : PacketBase
     {
         BinaryReader readStream;
-        //BinaryWriter writeStream;
+        BinaryWriter writeStream;
+
+        public StsPacket(StsReason reason = StsReason.OK)
+        {
+            writeStream = new BinaryWriter(new MemoryStream());
+
+            WriteStringLine($"STS/1.0 {(int)reason} {reason.ToString()}");
+        }
 
         public StsPacket(byte[] data)
         {
@@ -22,6 +30,27 @@ namespace AuthServer.Network.Packets
 
             Data = data;
             Values = new Dictionary<string, object>();
+        }
+
+        public void WriteStringLine(string line)
+        {
+            writeStream.Write(Encoding.UTF8.GetBytes(line));
+            writeStream.Write(new byte[] { 0x0D, 0x0A });
+        }
+
+        public void WriteData(int length, int sequence)
+        {
+            WriteStringLine($"l:{length}");
+            WriteStringLine($"s:{sequence}R");
+
+            writeStream.Write(new byte[] { 0x0D, 0x0A });
+
+            Finish();
+        }
+
+        public void Finish()
+        {
+            Data = (writeStream.BaseStream as MemoryStream).ToArray();
         }
 
         public override void ReadHeader(Tuple<string, string[], int> headerInfo)
