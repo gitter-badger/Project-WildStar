@@ -195,7 +195,7 @@ namespace AuthServer.Network
                 PacketLog.Write<AuthPacket>(packet.Data, packet.Data.Length, client.RemoteEndPoint as IPEndPoint);
 
                 if (ServerCrypt != null)
-                    ServerCrypt.ProcessBuffer(packet.Data, packet.Data.Length);
+                    ServerCrypt.ProcessBuffer(packet.Data);
 
                 var socketEventargs = new SocketAsyncEventArgs();
 

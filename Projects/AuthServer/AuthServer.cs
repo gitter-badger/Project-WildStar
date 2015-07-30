@@ -4,6 +4,7 @@
 using System;
 using System.Threading;
 using AuthServer.Configuration;
+using AuthServer.ConsoleCommands;
 using AuthServer.Network;
 using AuthServer.Network.Packets;
 using Framework.Database;
@@ -30,8 +31,8 @@ namespace AuthServer
                 {
                     PacketManager.DefineMessageHandler();
 
-                    while (true)
-                        Thread.Sleep(1);
+                    // Prevents auto close.
+                    ConsoleCommandManager.InitCommands();
                 }
             }
             else

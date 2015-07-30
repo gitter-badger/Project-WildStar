@@ -31,10 +31,17 @@ namespace AuthServer.Network.Packets
             xmlWriter.WriteRaw("\n");
         }
 
-        public void WriteElement(string name, string data)
+        public void WriteElement(string name, string data, bool newLine = true)
         {
             xmlWriter.WriteElementString(name, data);
-            xmlWriter.WriteRaw("\n");
+
+            if (newLine)
+                xmlWriter.WriteRaw("\n");
+        }
+
+        public void WriteAttribute(string attribute, string data)
+        {
+            xmlWriter.WriteAttributeString(attribute, data);
         }
 
         public override string ToString()

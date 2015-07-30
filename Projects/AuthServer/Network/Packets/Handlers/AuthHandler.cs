@@ -18,9 +18,13 @@ namespace AuthServer.Network.Packets.Handlers
         [AuthMessage(AuthMessage.LoginStart)]
         public static void HandleAuthLoginStart(AuthPacket packet, AuthSession session)
         {
+            // Can be an email or user name.
             var loginName = packet["LoginName"].ToString();
 
-            if (loginName != null && (session.Account = DB.Auth.Single<Account>(a => a.LoginName == loginName)) != null)
+            session.Account = DB.Auth.Single<Account>(a => a.Email == loginName);
+
+            // Support for email only.
+            if (loginName != null && session.Account != null)
             {
                 session.SecureRemotePassword = new SRP6a(session.Account.Salt, loginName, session.Account.PasswordVerifier);
                 session.SecureRemotePassword.CalculateB();
@@ -32,12 +36,11 @@ namespace AuthServer.Network.Packets.Handlers
                 keyData.Write(session.SecureRemotePassword.B.Length);
                 keyData.Write(session.SecureRemotePassword.B);
 
+                var reply = new AuthPacket(AuthReason.OK, packet.Header.Sequence);
                 var xmlData = new XmlData();
 
                 xmlData.WriteElementRoot("Reply");
                 xmlData.WriteElement("KeyData", Convert.ToBase64String(keyData.ToArray()));
-
-                var reply = new AuthPacket(AuthReason.OK, packet.Header.Sequence);
 
                 reply.WriteXmlData(xmlData);
 
@@ -78,19 +81,15 @@ namespace AuthServer.Network.Packets.Handlers
                 SKeyData.Write(session.SecureRemotePassword.ServerM.Length);
                 SKeyData.Write(session.SecureRemotePassword.ServerM);
 
+                var reply = new AuthPacket(AuthReason.OK, packet.Header.Sequence);
                 var xmlData = new XmlData();
 
                 xmlData.WriteElementRoot("Reply");
                 xmlData.WriteElement("KeyData", Convert.ToBase64String(SKeyData.ToArray()));
 
-                var reply = new AuthPacket(AuthReason.OK, packet.Header.Sequence);
-
                 reply.WriteXmlData(xmlData);
 
                 session.Send(reply);
-
-                session.ServerCrypt = new SARC4();
-                session.ServerCrypt.PrepareKey(session.SecureRemotePassword.SessionKey);
             }
             else
             {
@@ -107,6 +106,18 @@ namespace AuthServer.Network.Packets.Handlers
         [AuthMessage(AuthMessage.LoginFinish)]
         public static void HandleAuthLoginFinish(AuthPacket packet, AuthSession session)
         {
+            // Server packets are encrypted now.
+            session.ServerCrypt = new SARC4();
+            session.ServerCrypt.PrepareKey(session.SecureRemotePassword.SessionKey);
+
+            var reply = new AuthPacket(AuthReason.OK, packet.Header.Sequence);
+            var xmlData = new XmlData();
+
+            
+
+            reply.WriteXmlData(xmlData);
+
+            session.Send(reply);
         }
     }
 }

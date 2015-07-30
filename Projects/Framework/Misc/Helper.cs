@@ -26,5 +26,19 @@ namespace Framework.Misc
 
             return key;
         }
+
+        public static T Read<T>(string[] args, int index)
+        {
+            try
+            {
+                return args[index].ChangeType<T>();
+            }
+            catch
+            {
+                Console.WriteLine("Wrong arguments.");
+            }
+
+            return default(T);
+        }
     }
 }

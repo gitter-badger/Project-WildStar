@@ -12,6 +12,6 @@ namespace Framework.Database.Auth
         public string LoginName        { get; set; }
         public string PasswordVerifier { get; set; }
         public string Salt             { get; set; }
-        public bool Online             { get; set; }
+        public byte Online             { get; set; }
     }
 }
