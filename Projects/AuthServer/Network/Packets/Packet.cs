@@ -24,6 +24,10 @@ namespace AuthServer.Network.Packets
             writeStream = new BinaryWriter(new MemoryStream());
 
             Header = new PacketHeader { Message = (ushort)message };
+
+            Write(message, 12);
+
+            FlushServer();
         }
 
         public Packet(byte[] data)
@@ -40,15 +44,15 @@ namespace AuthServer.Network.Packets
                     Message = Read<ushort>(12)
                 };
 
-                Flush();
+                FlushClient();
 
                 if (Header.Message == (ushort)ClientMessage.MultiPacket)
                 {
                     Header.Size = Read<uint>(24);
 
-                    Flush();
+                    FlushClient();
 
-                    offset = (int)readStream.BaseStream.Position;
+                    offset = (int)readStream.BaseStream.Position + 1;
 
                     Data = new byte[Header.Size - 4];
                     Buffer.BlockCopy(data, offset, Data, 0, (int)Header.Size - 4);
@@ -61,8 +65,64 @@ namespace AuthServer.Network.Packets
             }
         }
 
+        public void FinishData()
+        {
+            //FlushServer();
+
+            Data = (writeStream.BaseStream as MemoryStream).ToArray();
+        }
+
         public void Finish()
         {
+            writeStream = new BinaryWriter(new MemoryStream());
+
+            Write(Data.Length + 10, 24);
+
+            FlushServer();
+
+            Write(ServerMessage.MultiPacket, 12);
+
+            FlushServer();
+
+            Write(Data.Length + 4, 24);
+
+            FlushServer();
+
+            writeStream.Write(Data);
+
+            Data = (writeStream.BaseStream as MemoryStream).ToArray();
+        }
+
+        public void Write(object value, int bits)
+        {
+            var val = value.ChangeType<ulong>();
+            var bitsToWrite = 0;
+            var writtenBits = 0;
+            var count = bits;
+
+            while (count > 0)
+            {
+                bitsToWrite = 8 - shiftedBits;
+
+                if (bitsToWrite > bits - writtenBits)
+                    bitsToWrite = bits - writtenBits;
+
+                packedByte |= (byte)(((ulong)((1 << bitsToWrite) - 1) & val) << (shiftedBits & 0x1F));
+
+                writtenBits = bitsToWrite;
+                count -= bitsToWrite;
+
+                shiftedBits = (bitsToWrite + shiftedBits) & 7;
+
+                if (shiftedBits == 0)
+                {
+                    writeStream.Write(packedByte);
+
+                    packedByte = 0;
+                }
+
+                val >>= bitsToWrite;
+            }
         }
 
         public void ReAssign()
@@ -112,7 +172,7 @@ namespace AuthServer.Network.Packets
 
         public byte[] Read(int count)
         {
-            Flush();
+            FlushClient();
 
             return readStream.ReadBytes(count);
         }
@@ -128,13 +188,21 @@ namespace AuthServer.Network.Packets
             return s;
         }
 
-        public void Flush()
+        public void FlushClient()
         {
             if (shiftedBits != 0)
             {
                 shiftedBits = 0;
                 packedByte = Read<byte>();
             }
+        }
+
+        public void FlushServer()
+        {
+            writeStream.Write(packedByte);
+
+            shiftedBits = 0;
+            packedByte = 0;
         }
     }
 }

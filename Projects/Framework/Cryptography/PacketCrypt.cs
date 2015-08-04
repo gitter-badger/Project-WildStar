@@ -9,12 +9,14 @@ namespace Framework.Cryptography
     {
         ulong keyValue1 = 0x718DA9074F2DEB91;
         uint keyValue2 = 0xAA7F8EA9;
+        ulong keyState;
 
-        byte[] keyState = new byte[8];
         byte[] key = new byte[128];
 
         public PacketCrypt()
         {
+            keyState = keyValue1;
+
             var baseKey = CalculateBaseKey();
             var keyPart = keyValue2 * (baseKey + keyValue1);
 
@@ -27,22 +29,69 @@ namespace Framework.Cryptography
                 keyPart = keyValue2 * (baseKey + keyPart);
             }
 
-            var state = keyValue1;
-
             for (var i = 32; i < key.Length + 32; i += 32)
             {
-                state = keyValue2 * (BitConverter.ToUInt64(key, i - 32) + state);
-                state = keyValue2 * (BitConverter.ToUInt64(key, i - 24) + state);
-                state = keyValue2 * (BitConverter.ToUInt64(key, i - 16) + state);
-                state = keyValue2 * (BitConverter.ToUInt64(key, i - 8) + state);
+                keyState = keyValue2 * (BitConverter.ToUInt64(key, i - 32) + keyState);
+                keyState = keyValue2 * (BitConverter.ToUInt64(key, i - 24) + keyState);
+                keyState = keyValue2 * (BitConverter.ToUInt64(key, i - 16) + keyState);
+                keyState = keyValue2 * (BitConverter.ToUInt64(key, i - 8) + keyState);
             }
-
-            keyState = BitConverter.GetBytes(state);
         }
 
         ulong CalculateBaseKey()
         {
             return keyValue1 * (keyValue2 * (keyValue1 - 0x502028AC11024130) + 9024) + 0x4282FFFAE72B3921;
+        }
+
+        ulong CalculateGatewayKey(byte[] gatewayTicket)
+        {
+            var baseKey = CalculateBaseKey();
+            var gatewayKey = keyValue1;
+
+            for (var i = 0; i < gatewayTicket.Length; i++)
+                gatewayKey = keyValue2 * (gatewayKey + gatewayTicket[i]);
+
+            return keyValue2 * (gatewayKey + CalculateBaseKey());
+        }
+
+        public void Encrypt(byte[] data, int length)
+        {
+            var state = BitConverter.GetBytes(keyState);
+            var kIndex = 0xAA7F8EAA * length;
+            var tmp = 0u;
+
+            for (var i = 0; i < length; i++)
+            {
+                var index = i & 7;
+
+                if (index == 0)
+                    tmp = (uint)(kIndex++ & 0xF) << 3;
+
+                data[i] = (byte)(state[index] ^ data[i] ^ key[index + tmp]);
+
+                state[index] = data[i];
+            }
+        }
+
+        public void Decrypt(byte[] data, int length)
+        {
+            var state = BitConverter.GetBytes(keyState);
+            var kIndex = 0xAA7F8EAA * length;
+            var tmp = 0u;
+
+            for (var i = 0; i < length; i++)
+            {
+                var index = i & 7;
+
+                if (index == 0)
+                    tmp = (uint)(kIndex++ & 0xF) << 3;
+
+                var unchangedByte = data[i];
+
+                data[i] = (byte)(state[index] ^ data[i] ^ key[index + tmp]);
+
+                state[index] = unchangedByte;
+            }
         }
     }
 }

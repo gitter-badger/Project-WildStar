@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using AuthServer.Constants.Net;
 using AuthServer.Network.Packets;
 using Framework.Cryptography;
 using Framework.Logging;
@@ -44,6 +45,22 @@ namespace AuthServer.Network
 
             e.Completed -= OnConnection;
             e.Completed += Process;
+
+            var sHello = new Packet(ServerMessage.SHello);
+
+            sHello.Write(9024, 32);
+            sHello.Write(0, 32);
+            sHello.Write(0, 32);
+            sHello.Write(0, 32);
+            sHello.Write(0, 64);
+            sHello.Write(0, 16);
+            sHello.Write(3, 5);
+            sHello.Write(0x63DDB9B9, 32);
+            sHello.Write(0, 32);
+            sHello.Write(0, 64);
+            sHello.Write(0, 32);
+
+            Send(sHello);
 
             client.ReceiveAsync(e);
         }
@@ -89,11 +106,13 @@ namespace AuthServer.Network
         {
             try
             {
+                packet.FinishData();
+
+                crypt.Encrypt(packet.Data, packet.Data.Length);
+
                 packet.Finish();
 
                 PacketLog.Write<Packet>(packet.Data, packet.Data.Length, client.RemoteEndPoint as IPEndPoint);
-
-                crypt.Encrypt(packet.Data, packet.Data.Length);
 
                 var socketEventargs = new SocketAsyncEventArgs();
 
