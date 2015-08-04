@@ -47,7 +47,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\AuthPacketAttribute.cs" />
     <Compile Include="AuthServer.cs" />
+    <Compile Include="Constants\Net\ClientMessage.cs" />
+    <Compile Include="Constants\Net\ServerMessage.cs" />
+    <Compile Include="Network\AuthSession.cs" />
+    <Compile Include="Network\Packets\Handler\AuthHandler.cs" />
+    <Compile Include="Network\Packets\Packet.cs" />
+    <Compile Include="Network\Packets\PacketHeader.cs" />
+    <Compile Include="Network\Packets\PacketManager.cs" />
+    <Compile Include="Network\Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -56,6 +65,7 @@
       <Name>Framework</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
