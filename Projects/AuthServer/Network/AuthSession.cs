@@ -112,6 +112,29 @@ namespace AuthServer.Network
             }
         }
 
+        public void SendRaw(byte[] data)
+        {
+            try
+            {
+                PacketLog.Write<Packet>(data, data.Length, client.RemoteEndPoint as IPEndPoint);
+
+                var socketEventargs = new SocketAsyncEventArgs();
+
+                socketEventargs.SetBuffer(data, 0, data.Length);
+
+                socketEventargs.Completed += SendCompleted;
+                socketEventargs.UserToken = data;
+                socketEventargs.RemoteEndPoint = client.RemoteEndPoint;
+                socketEventargs.SocketFlags = SocketFlags.None;
+
+                client.SendAsync(socketEventargs);
+            }
+            catch
+            {
+                Dispose();
+            }
+        }
+
         void SendCompleted(object sender, SocketAsyncEventArgs e)
         {
         }

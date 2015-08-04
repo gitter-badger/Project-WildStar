@@ -11,13 +11,15 @@ namespace AuthServer.Network.Packets.Handler
         [AuthPacket(ClientMessage.State1)]
         public static void HandleState1(Packet packet, AuthSession session)
         {
-
+            // Send same data back for now.
+            session.SendRaw(packet.Data);
         }
 
         [AuthPacket(ClientMessage.State2)]
         public static void HandleState2(Packet packet, AuthSession session)
         {
-            
+            // Send same data back for now.
+            session.SendRaw(packet.Data);
         }
     }
 }
