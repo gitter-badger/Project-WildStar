@@ -125,9 +125,13 @@ namespace AuthServer.Network.Packets
             }
         }
 
-        public void ReAssign()
+        public void ReadMessage()
         {
             readStream = new BinaryReader(new MemoryStream(Data));
+
+            Header.Message = Read<ushort>(12);
+
+            FlushClient();
         }
 
         public T Read<T>(byte bits = 0)

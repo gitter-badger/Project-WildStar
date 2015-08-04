@@ -82,6 +82,8 @@ namespace AuthServer.Network
 
                     crypt.Decrypt(pkt.Data, pkt.Data.Length);
 
+                    pkt.ReadMessage();
+
                     ProcessPacket(pkt);
 
                     client.ReceiveAsync(e);
