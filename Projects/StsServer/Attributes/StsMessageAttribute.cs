@@ -2,15 +2,15 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using AuthServer.Constants.Net;
+using StsServer.Constants.Net;
 
-namespace AuthServer.Attributes
+namespace StsServer.Attributes
 {
-    class AuthMessageAttribute : Attribute
+    class StsMessageAttribute : Attribute
     {
-        public AuthMessage Message { get; set; }
+        public StsMessage Message { get; set; }
         
-        public AuthMessageAttribute(AuthMessage message)
+        public StsMessageAttribute(StsMessage message)
         {
             Message = message;
         }

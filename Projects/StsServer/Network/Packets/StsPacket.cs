@@ -7,12 +7,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using AuthServer.Constants.Net;
-using AuthServer.Network.Packets.Headers;
+using StsServer.Constants.Net;
+using StsServer.Network.Packets.Headers;
 
-namespace AuthServer.Network.Packets
+namespace StsServer.Network.Packets
 {
-    class AuthPacket
+    class StsPacket
     {
         public object this[string elementName]
         {
@@ -27,27 +27,27 @@ namespace AuthServer.Network.Packets
             }
         }
 
-        public AuthHeader Header { get; set; }
+        public StsHeader Header { get; set; }
         public byte[] Data { get; set; }
 
         BinaryReader readStream;
         BinaryWriter stsWriter, xmlWriter;
         Dictionary<string, object> values;
 
-        public AuthPacket(AuthReason reason = AuthReason.OK, int sequence = 0)
+        public StsPacket(StsReason reason = StsReason.OK, int sequence = 0)
         {
             stsWriter = new BinaryWriter(new MemoryStream());
             xmlWriter = new BinaryWriter(new MemoryStream());
 
             WriteStringLine($"STS/1.0 {(int)reason} {reason.ToString()}");
 
-            Header = new AuthHeader
+            Header = new StsHeader
             {
                 Sequence = (byte)sequence
             };
         }
 
-        public AuthPacket(byte[] data)
+        public StsPacket(byte[] data)
         {
             readStream = new BinaryReader(new MemoryStream(data));
 
@@ -109,12 +109,12 @@ namespace AuthServer.Network.Packets
                     else if (headerInfo.Item2.Length >= 2)
                         length = Convert.ToUInt16(headerInfo.Item2[1].Remove(0, 2));
 
-                    AuthMessage msg;
+                    StsMessage msg;
 
                     if (!Enum.TryParse(msgString, out msg))
-                        msg = AuthMessage.Unknown;
+                        msg = StsMessage.Unknown;
 
-                    Header = new AuthHeader
+                    Header = new StsHeader
                     {
                         Message    = msg,
                         Length     = (ushort)headerInfo.Item3,

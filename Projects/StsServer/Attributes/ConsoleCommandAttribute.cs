@@ -3,7 +3,7 @@
 
 using System;
 
-namespace AuthServer.Attributes
+namespace StsServer.Attributes
 {
     [AttributeUsage(AttributeTargets.Method)]
     public sealed class ConsoleCommandAttribute : Attribute

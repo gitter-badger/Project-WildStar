@@ -7,16 +7,16 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using AuthServer.Network.Packets;
+using StsServer.Network.Packets;
 using Framework.Cryptography;
 using Framework.Cryptography.BNet;
 using Framework.Database.Auth;
 using Framework.Logging;
 using Framework.Misc;
 
-namespace AuthServer.Network
+namespace StsServer.Network
 {
-    class AuthSession : IDisposable
+    class StsSession : IDisposable
     {
         public Account Account { get; set; }
         public int State { get; set; }
@@ -25,13 +25,13 @@ namespace AuthServer.Network
         public SARC4 ServerCrypt { get; set; }
 
         Socket client;
-        Stack<AuthPacket> packetQueue;
+        Stack<StsPacket> packetQueue;
         byte[] dataBuffer = new byte[0x400];
 
-        public AuthSession(Socket clientSocket)
+        public StsSession(Socket clientSocket)
         {
             client = clientSocket;
-            packetQueue = new Stack<AuthPacket>();
+            packetQueue = new Stack<StsPacket>();
         }
 
         public void Accept()
@@ -49,7 +49,7 @@ namespace AuthServer.Network
 
         public void OnConnection(object sender, SocketAsyncEventArgs e)
         {
-            PacketLog.Write<AuthPacket>(dataBuffer, e.BytesTransferred, client.RemoteEndPoint as IPEndPoint);
+            PacketLog.Write<StsPacket>(dataBuffer, e.BytesTransferred, client.RemoteEndPoint as IPEndPoint);
 
             if (e.BytesTransferred < 256 || e.BytesTransferred > 400)
             {
@@ -77,7 +77,7 @@ namespace AuthServer.Network
                         return;
                     }
 
-                    var packet = new AuthPacket(packetData);
+                    var packet = new StsPacket(packetData);
 
                     packet.ReadHeader(packetInfo);
 
@@ -89,7 +89,7 @@ namespace AuthServer.Network
 
                     packet.ReadData(packetData);
 
-                    PacketManager.Invoke(packet, this);
+                    StsPacketManager.Invoke(packet, this);
 
                     e.Completed -= OnConnection;
                     e.Completed += Process;
@@ -149,7 +149,7 @@ namespace AuthServer.Network
                     // POST
                     if (BitConverter.ToUInt32(packetData, 0) == 0x54534F50)
                     {
-                        var packet = new AuthPacket(packetData);
+                        var packet = new StsPacket(packetData);
                         var packetInfo = GetMessageType(packetData);
                         
                         packet.ReadHeader(packetInfo);
@@ -182,20 +182,20 @@ namespace AuthServer.Network
             }
         }
 
-        public void ProcessPacket(AuthPacket packet)
+        public void ProcessPacket(StsPacket packet)
         {
-            PacketLog.Write<AuthPacket>(packet.Data, packet.Data.Length, client.RemoteEndPoint as IPEndPoint);
+            PacketLog.Write<StsPacket>(packet.Data, packet.Data.Length, client.RemoteEndPoint as IPEndPoint);
 
-            PacketManager.Invoke(packet, this);
+            StsPacketManager.Invoke(packet, this);
         }
 
-        public void Send(AuthPacket packet)
+        public void Send(StsPacket packet)
         {
             try
             {
                 packet.Finish();
 
-                PacketLog.Write<AuthPacket>(packet.Data, packet.Data.Length, client.RemoteEndPoint as IPEndPoint);
+                PacketLog.Write<StsPacket>(packet.Data, packet.Data.Length, client.RemoteEndPoint as IPEndPoint);
 
                 if (ServerCrypt != null)
                     ServerCrypt.ProcessBuffer(packet.Data);

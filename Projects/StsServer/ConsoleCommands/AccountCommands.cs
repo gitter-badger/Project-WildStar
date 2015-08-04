@@ -2,13 +2,13 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using AuthServer.Attributes;
+using StsServer.Attributes;
 using Framework.Cryptography.BNet;
 using Framework.Database;
 using Framework.Database.Auth;
 using Framework.Misc;
 
-namespace AuthServer.ConsoleCommands
+namespace StsServer.ConsoleCommands
 {
     class AccountCommands
     {

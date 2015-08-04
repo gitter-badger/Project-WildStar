@@ -3,20 +3,20 @@
 
 using System;
 using System.IO;
-using AuthServer.Attributes;
-using AuthServer.Constants.Net;
+using StsServer.Attributes;
+using StsServer.Constants.Net;
 using Framework.Cryptography;
 using Framework.Cryptography.BNet;
 using Framework.Database;
 using Framework.Database.Auth;
 using Framework.Misc;
 
-namespace AuthServer.Network.Packets.Handlers
+namespace StsServer.Network.Packets.Handlers
 {
-    class AuthHandler
+    class StsHandler
     {
-        [AuthMessage(AuthMessage.LoginStart)]
-        public static void HandleAuthLoginStart(AuthPacket packet, AuthSession session)
+        [StsMessage(StsMessage.LoginStart)]
+        public static void HandleAuthLoginStart(StsPacket packet, StsSession session)
         {
             // Can be an email or user name.
             var loginName = packet["LoginName"].ToString();
@@ -36,7 +36,7 @@ namespace AuthServer.Network.Packets.Handlers
                 keyData.Write(session.SecureRemotePassword.B.Length);
                 keyData.Write(session.SecureRemotePassword.B);
 
-                var reply = new AuthPacket(AuthReason.OK, packet.Header.Sequence);
+                var reply = new StsPacket(StsReason.OK, packet.Header.Sequence);
                 var xmlData = new XmlData();
 
                 xmlData.WriteElementRoot("Reply");
@@ -49,7 +49,7 @@ namespace AuthServer.Network.Packets.Handlers
             else
             {
                 // Let's use ErrBadPasswd instead of ErrAccountNotFound.
-                var reply = new AuthPacket(AuthReason.ErrBadPasswd, packet.Header.Sequence);
+                var reply = new StsPacket(StsReason.ErrBadPasswd, packet.Header.Sequence);
 
                 reply.WriteString("<Error code=\"11\" server=\"0\" module=\"0\" line=\"0\"/>\n");
 
@@ -57,8 +57,8 @@ namespace AuthServer.Network.Packets.Handlers
             }
         }
 
-        [AuthMessage(AuthMessage.KeyData)]
-        public static void HandleAuthKeyData(AuthPacket packet, AuthSession session)
+        [StsMessage(StsMessage.KeyData)]
+        public static void HandleAuthKeyData(StsPacket packet, StsSession session)
         {
             var keyData = new BinaryReader(new MemoryStream(Convert.FromBase64String(packet["KeyData"].ToString())));
             var a = keyData.ReadBytes(keyData.ReadInt32());
@@ -81,7 +81,7 @@ namespace AuthServer.Network.Packets.Handlers
                 SKeyData.Write(session.SecureRemotePassword.ServerM.Length);
                 SKeyData.Write(session.SecureRemotePassword.ServerM);
 
-                var reply = new AuthPacket(AuthReason.OK, packet.Header.Sequence);
+                var reply = new StsPacket(StsReason.OK, packet.Header.Sequence);
                 var xmlData = new XmlData();
 
                 xmlData.WriteElementRoot("Reply");
@@ -95,7 +95,7 @@ namespace AuthServer.Network.Packets.Handlers
             {
                 session.Account = null;
 
-                var reply = new AuthPacket(AuthReason.ErrBadPasswd, packet.Header.Sequence);
+                var reply = new StsPacket(StsReason.ErrBadPasswd, packet.Header.Sequence);
 
                 reply.WriteString("<Error code=\"11\" server=\"0\" module=\"0\" line=\"0\"/>\n");
 
@@ -103,14 +103,14 @@ namespace AuthServer.Network.Packets.Handlers
             }
         }
 
-        [AuthMessage(AuthMessage.LoginFinish)]
-        public static void HandleAuthLoginFinish(AuthPacket packet, AuthSession session)
+        [StsMessage(StsMessage.LoginFinish)]
+        public static void HandleAuthLoginFinish(StsPacket packet, StsSession session)
         {
             // Server packets are encrypted now.
             session.ServerCrypt = new SARC4();
             session.ServerCrypt.PrepareKey(session.SecureRemotePassword.SessionKey);
 
-            var reply = new AuthPacket(AuthReason.OK, packet.Header.Sequence);
+            var reply = new StsPacket(StsReason.OK, packet.Header.Sequence);
             var xmlData = new XmlData();
 
             xmlData.WriteElementRoot("Reply");
@@ -128,10 +128,10 @@ namespace AuthServer.Network.Packets.Handlers
             session.Send(reply);
         }
 
-        [AuthMessage(AuthMessage.RequestGameToken)]
-        public static void HandleAuthRequestGameToken(AuthPacket packet, AuthSession session)
+        [StsMessage(StsMessage.RequestGameToken)]
+        public static void HandleAuthRequestGameToken(StsPacket packet, StsSession session)
         {
-            var reply = new AuthPacket(AuthReason.OK, packet.Header.Sequence);
+            var reply = new StsPacket(StsReason.OK, packet.Header.Sequence);
             var xmlData = new XmlData();
 
             xmlData.WriteElementRoot("Reply");

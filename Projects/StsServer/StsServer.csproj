@@ -4,15 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CC4266AC-7AED-4406-BD11-B6F217A0BA13}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{27166AA7-E01B-471C-AE0D-491C785CBCCB}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Framework</RootNamespace>
-    <AssemblyName>Framework</AssemblyName>
+    <RootNamespace>StsServer</RootNamespace>
+    <AssemblyName>StsServer</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -20,21 +22,23 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Build\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,26 +47,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cryptography\PacketCrypt.cs" />
-    <Compile Include="Cryptography\SARC4.cs" />
-    <Compile Include="Cryptography\SRP6a.cs" />
-    <Compile Include="Database\Auth\Account.cs" />
-    <Compile Include="Database\Auth\GameAccount.cs" />
-    <Compile Include="Database\DB.cs" />
-    <Compile Include="Logging\LogWriter.cs" />
-    <Compile Include="Logging\PacketLog.cs" />
-    <Compile Include="Misc\Config.cs" />
-    <Compile Include="Misc\Extensions.cs" />
-    <Compile Include="Misc\Helper.cs" />
-    <Compile Include="Network\ServerBase.cs" />
+    <Compile Include="Attributes\StsMessageAttribute.cs" />
+    <Compile Include="Attributes\ConsoleCommandAttribute.cs" />
+    <Compile Include="StsServer.cs" />
+    <Compile Include="Configuration\StsConfig.cs" />
+    <Compile Include="ConsoleCommands\AccountCommands.cs" />
+    <Compile Include="ConsoleCommands\ConsoleCommandManager.cs" />
+    <Compile Include="Constants\Net\StsMessage.cs" />
+    <Compile Include="Constants\Net\StsReason.cs" />
+    <Compile Include="Network\StsSession.cs" />
+    <Compile Include="Network\Packets\StsPacket.cs" />
+    <Compile Include="Network\Packets\Handlers\StsHandler.cs" />
+    <Compile Include="Network\Packets\Handlers\GameAccountHandler.cs" />
+    <Compile Include="Network\Packets\Headers\StsHeader.cs" />
+    <Compile Include="Network\Packets\StsPacketManager.cs" />
+    <Compile Include="Network\Packets\XmlData.cs" />
+    <Compile Include="Network\Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Configs\StsServer.conf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\Framework\Framework.csproj">
+      <Project>{cc4266ac-7aed-4406-bd11-b6f217a0ba13}</Project>
+      <Name>Framework</Name>
+    </ProjectReference>
   </ItemGroup>
-  <Import Project="..\..\Libraries\LappaORM\Lappa ORM\Lappa ORM.projitems" Label="Shared" />
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

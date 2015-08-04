@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using Framework.Network;
 
-namespace AuthServer.Network
+namespace StsServer.Network
 {
     class Server : ServerBase
     {
@@ -13,7 +13,7 @@ namespace AuthServer.Network
 
         public override async Task DoWork(Socket client)
         {
-            await Task.Factory.StartNew(new AuthSession(client).Accept);
+            await Task.Factory.StartNew(new StsSession(client).Accept);
         }
     }
 }

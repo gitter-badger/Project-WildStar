@@ -5,9 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
-using AuthServer.Attributes;
+using StsServer.Attributes;
 
-namespace AuthServer.ConsoleCommands
+namespace StsServer.ConsoleCommands
 {
     class ConsoleCommandManager
     {
@@ -33,14 +33,14 @@ namespace AuthServer.ConsoleCommands
         {
             DefineCommands();
 
-            Console.WriteLine("AuthServer successfully started");
+            Console.WriteLine("StsServer successfully started");
             Console.WriteLine("Total Memory: {0} Kilobytes", GC.GetTotalMemory(false) / 1024);
 
             while (true)
             {
                 Thread.Sleep(1);
 
-                Console.WriteLine("AuthServer >> ");
+                Console.WriteLine("StsServer >> ");
 
                 var line = Console.ReadLine().Split(new string[] { " " }, StringSplitOptions.None);
 

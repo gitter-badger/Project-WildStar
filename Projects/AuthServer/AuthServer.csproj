@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{27166AA7-E01B-471C-AE0D-491C785CBCCB}</ProjectGuid>
+    <ProjectGuid>{84ED483A-BB1F-4A28-8D46-0DFEDC118FE8}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AuthServer</RootNamespace>
@@ -47,22 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\AuthMessageAttribute.cs" />
-    <Compile Include="Attributes\ConsoleCommandAttribute.cs" />
     <Compile Include="AuthServer.cs" />
-    <Compile Include="Configuration\AuthConfig.cs" />
-    <Compile Include="ConsoleCommands\AccountCommands.cs" />
-    <Compile Include="ConsoleCommands\ConsoleCommandManager.cs" />
-    <Compile Include="Constants\Net\AuthMessage.cs" />
-    <Compile Include="Constants\Net\AuthReason.cs" />
-    <Compile Include="Network\AuthSession.cs" />
-    <Compile Include="Network\Packets\AuthPacket.cs" />
-    <Compile Include="Network\Packets\Handlers\AuthHandler.cs" />
-    <Compile Include="Network\Packets\Handlers\GameAccountHandler.cs" />
-    <Compile Include="Network\Packets\Headers\AuthHeader.cs" />
-    <Compile Include="Network\Packets\PacketManager.cs" />
-    <Compile Include="Network\Packets\XmlData.cs" />
-    <Compile Include="Network\Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -71,7 +56,6 @@
       <Name>Framework</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

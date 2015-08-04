@@ -7,9 +7,9 @@ using Framework.Logging.IO;
 using Framework.Misc;
 using Lappa_ORM;
 
-namespace AuthServer.Configuration
+namespace StsServer.Configuration
 {
-    class AuthConfig
+    class StsConfig
     {
         static Config config;
 
@@ -39,7 +39,7 @@ namespace AuthServer.Configuration
 
             if (config != null)
             {
-                LogDirectory   = config.Read("Log.Directory", "Logs/AuthServer");
+                LogDirectory   = config.Read("Log.Directory", "Logs/StsServer");
                 LogConsoleFile = config.Read("Log.Console.File", "");
                 LogPacketFile  = config.Read("Log.Packet.File", "");
 

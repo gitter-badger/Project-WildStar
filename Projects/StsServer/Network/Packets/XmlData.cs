@@ -4,7 +4,7 @@
 using System.Text;
 using System.Xml;
 
-namespace AuthServer.Network.Packets
+namespace StsServer.Network.Packets
 {
     class XmlData
     {
