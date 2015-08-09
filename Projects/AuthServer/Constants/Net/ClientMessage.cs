@@ -3,11 +3,12 @@
 
 namespace AuthServer.Constants.Net
 {
-    enum ClientMessage
+    enum ClientMessage : ushort
     {
-        State1      = 0,
-        State2      = 1,
-        SHello      = 3,
+        State1      = 0x000,
+        State2      = 0x001,
+        SHello      = 0x003,
         MultiPacket = 0x20A,
+        AuthRequest = 0x4F4,
     }
 }

@@ -41,6 +41,15 @@ namespace AuthServer.Network
 
         public void OnConnection(object sender, SocketAsyncEventArgs e)
         {
+            if (e.BytesTransferred > 0)
+            {
+                var packetData = new byte[e.BytesTransferred];
+
+                Buffer.BlockCopy(dataBuffer, 0, packetData, 0, e.BytesTransferred);
+
+                ProcessPacket(new Packet(packetData));
+            }
+
             PacketLog.Write<Packet>(dataBuffer, e.BytesTransferred, client.RemoteEndPoint as IPEndPoint);
 
             e.Completed -= OnConnection;
@@ -80,9 +89,12 @@ namespace AuthServer.Network
 
                     var pkt = new Packet(packetData);
 
-                    crypt.Decrypt(pkt.Data, pkt.Data.Length);
+                    if (pkt.Header.Message != (ushort)ClientMessage.State1 && pkt.Header.Message != (ushort)ClientMessage.State2)
+                    {
+                        crypt.Decrypt(pkt.Data, pkt.Data.Length);
 
-                    pkt.ReadMessage();
+                        pkt.ReadMessage();
+                    }
 
                     ProcessPacket(pkt);
 

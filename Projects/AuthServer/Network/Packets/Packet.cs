@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using System.Text;
 using AuthServer.Constants.Net;
 using Framework.Misc;
 
@@ -125,6 +126,17 @@ namespace AuthServer.Network.Packets
             }
         }
 
+        public void WriteWString(string value)
+        {
+            var data = Encoding.Unicode.GetBytes(value);
+            var isLongString = (data.Length >> 1) > 0x7F;
+
+            Write(isLongString, 1);
+            Write(data.Length >> 1, isLongString ? 15 : 7);
+
+            writeStream.Write(data);
+        }
+
         public void ReadMessage()
         {
             readStream = new BinaryReader(new MemoryStream(Data));
@@ -134,7 +146,7 @@ namespace AuthServer.Network.Packets
             FlushClient();
         }
 
-        public T Read<T>(byte bits = 0)
+        public T Read<T>(int bits = 0)
         {
             if (bits == 0)
                 return readStream.Read<T>();
@@ -165,7 +177,7 @@ namespace AuthServer.Network.Packets
 
                 shiftedBits = (bitsToRead + shiftedBits) & 7;
 
-                if (shiftedBits == 0)
+                if (shiftedBits == 0 && readStream.BaseStream.Position < readStream.BaseStream.Length)
                     packedByte = Read<byte>();
             }
 
@@ -184,10 +196,32 @@ namespace AuthServer.Network.Packets
         public string ReadString()
         {
             var s = "";
-            var length = Read<byte>() >> 1;
+            var length = Read<ushort>(16);
+
+            for (int i = 1; i < length; i++)
+            {
+                var c = Convert.ToChar(Read<ushort>(16));
+
+                if (c.ToString() != "\0")
+                    s += c;
+            }
+
+            return s;
+        }
+
+        public string ReadWString()
+        {
+            var s = "";
+            var isLongString = Read<bool>(1);
+            var length = Read<ushort>(isLongString ? 15 : 7) << 1;
 
             for (int i = 0; i < length; i++)
-                s += Convert.ToChar(Read<ushort>());
+            {
+                var c = Convert.ToChar(Read<ushort>(16));
+
+                if (c.ToString() != "\0")
+                    s += c;
+            }
 
             return s;
         }
