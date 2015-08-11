@@ -47,7 +47,7 @@ namespace AuthServer.Network.Packets
 
                 FlushClient();
 
-                if (Header.Message == (ushort)ClientMessage.MultiPacket)
+                if (Header.Message == (ushort)ClientMessage.Composite)
                 {
                     Header.Size = Read<uint>(24);
 
@@ -81,7 +81,7 @@ namespace AuthServer.Network.Packets
 
             FlushServer();
 
-            Write(ServerMessage.MultiPacket, 12);
+            Write(ServerMessage.Composite, 12);
 
             FlushServer();
 

@@ -8,7 +8,7 @@ namespace AuthServer.Constants.Net
         State1         = 0x000,
         State2         = 0x001,
         SHello         = 0x003,
-        MultiPacket    = 0x06D,
+        Composite      = 0x06D,
         ConnectToRealm = 0x36A,
         AuthComplete   = 0x537,
     }

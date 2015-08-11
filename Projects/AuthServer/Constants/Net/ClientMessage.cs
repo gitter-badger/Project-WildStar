@@ -8,7 +8,7 @@ namespace AuthServer.Constants.Net
         State1      = 0x000,
         State2      = 0x001,
         SHello      = 0x003,
-        MultiPacket = 0x22F,
+        Composite   = 0x22F,
         AuthRequest = 0x538,
     }
 }

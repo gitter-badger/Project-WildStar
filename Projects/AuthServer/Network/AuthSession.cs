@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using AuthServer.Constants.Net;
@@ -15,14 +15,14 @@ namespace AuthServer.Network
     class AuthSession : IDisposable
     {
         Socket client;
-        Queue<Packet> packetQueue;
+        ConcurrentQueue<Packet> packetQueue;
         PacketCrypt crypt = null;
         byte[] dataBuffer = new byte[0x1000];
 
         public AuthSession(Socket clientSocket)
         {
             client = clientSocket;
-            packetQueue = new Queue<Packet>();
+            packetQueue = new ConcurrentQueue<Packet>();
             crypt = new PacketCrypt();
         }
 
@@ -83,20 +83,35 @@ namespace AuthServer.Network
 
                 if (receivedBytes > 0)
                 {
-                    var packetData = new byte[receivedBytes];
-
-                    Buffer.BlockCopy(dataBuffer, 0, packetData, 0, receivedBytes);
-
-                    var pkt = new Packet(packetData);
-
-                    if (pkt.Header.Message != (ushort)ClientMessage.State1 && pkt.Header.Message != (ushort)ClientMessage.State2)
+                    while (receivedBytes > 0)
                     {
-                        crypt.Decrypt(pkt.Data, pkt.Data.Length);
+                        var packetData = new byte[receivedBytes];
 
-                        pkt.ReadMessage();
+                        Buffer.BlockCopy(dataBuffer, 0, packetData, 0, receivedBytes);
+
+                        var pkt = new Packet(packetData);
+
+                        receivedBytes -= (int)pkt.Header.Size;
+
+                        if (pkt.Header.Message != (ushort)ClientMessage.State1 && pkt.Header.Message != (ushort)ClientMessage.State2)
+                        {
+                            crypt.Decrypt(pkt.Data, pkt.Data.Length);
+
+                            pkt.ReadMessage();
+
+                            // Remove the 'Composite' header.
+                            receivedBytes -= 6;
+
+                            Buffer.BlockCopy(dataBuffer, (int)pkt.Header.Size + 6, dataBuffer, 0, receivedBytes);
+                        }
+                        else
+                            Buffer.BlockCopy(dataBuffer, (int)pkt.Header.Size, dataBuffer, 0, receivedBytes);
+
+                        if (receivedBytes > 0)
+                            packetQueue.Enqueue(pkt);
+
+                        ProcessPacket(pkt);
                     }
-
-                    ProcessPacket(pkt);
 
                     client.ReceiveAsync(e);
                 }
@@ -111,6 +126,9 @@ namespace AuthServer.Network
 
         public void ProcessPacket(Packet packet)
         {
+            if (packetQueue.Count > 0)
+                packetQueue.TryDequeue(out packet);
+
             PacketLog.Write<Packet>(packet.Data, packet.Data.Length, client.RemoteEndPoint as IPEndPoint);
 
             PacketManager.Invoke(packet, this);
