@@ -35,9 +35,9 @@ namespace AuthServer.Network.Packets.Handler
 
             Console.WriteLine($"Account '{loginName}' tries to connect.");
 
-            var account = DB.Auth.Single<Account>(a => a.Email == loginName);
+            //var account = DB.Auth.Single<Account>(a => a.Email == loginName);
 
-            if (account != null && account.Online)
+            //if (account != null && account.Online)
             {
                 var authComplete = new Packet(ServerMessage.AuthComplete);
 
