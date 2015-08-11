@@ -10,6 +10,7 @@ using Framework.Cryptography.BNet;
 using Framework.Database;
 using Framework.Database.Auth;
 using Framework.Misc;
+using Lappa_ORM;
 
 namespace StsServer.Network.Packets.Handlers
 {
@@ -131,16 +132,21 @@ namespace StsServer.Network.Packets.Handlers
         [StsMessage(StsMessage.RequestGameToken)]
         public static void HandleAuthRequestGameToken(StsPacket packet, StsSession session)
         {
-            var reply = new StsPacket(StsReason.OK, packet.Header.Sequence);
-            var xmlData = new XmlData();
+            if (DB.Auth.Update<Account>(a => a.Id == session.Account.Id, a => a.Online.Set(true)))
+            {
+                var reply = new StsPacket(StsReason.OK, packet.Header.Sequence);
+                var xmlData = new XmlData();
 
-            xmlData.WriteElementRoot("Reply");
+                xmlData.WriteElementRoot("Reply");
 
-            xmlData.WriteElement("Token", "");
+                xmlData.WriteElement("Token", "");
 
-            reply.WriteXmlData(xmlData);
+                reply.WriteXmlData(xmlData);
 
-            session.Send(reply);
+                session.Send(reply);
+            }
+            else
+                session.Dispose();
         }
     }
 }

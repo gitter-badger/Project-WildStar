@@ -9,7 +9,7 @@ namespace AuthServer.Constants.Net
         State2         = 0x001,
         SHello         = 0x003,
         Composite      = 0x06D,
-        ConnectToRealm = 0x36A,
+        ConnectToRealm = 0x3A9,
         AuthComplete   = 0x537,
     }
 }
