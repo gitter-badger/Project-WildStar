@@ -11,6 +11,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Lappa ORM", "Libraries\Lapp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthServer", "Projects\AuthServer\AuthServer.csproj", "{84ED483A-BB1F-4A28-8D46-0DFEDC118FE8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealmServer", "Projects\RealmServer\RealmServer.csproj", "{887CCAEE-AFA0-4794-9963-E9BDA9FFADF1}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Libraries\LappaORM\Lappa ORM\Lappa ORM.projitems*{d5ff446f-caa9-4995-9957-88b43bc86fab}*SharedItemsImports = 13
@@ -47,6 +49,14 @@ Global
 		{84ED483A-BB1F-4A28-8D46-0DFEDC118FE8}.Release|x64.Build.0 = Release|x64
 		{84ED483A-BB1F-4A28-8D46-0DFEDC118FE8}.Release|x86.ActiveCfg = Release|x86
 		{84ED483A-BB1F-4A28-8D46-0DFEDC118FE8}.Release|x86.Build.0 = Release|x86
+		{887CCAEE-AFA0-4794-9963-E9BDA9FFADF1}.Debug|x64.ActiveCfg = Debug|x64
+		{887CCAEE-AFA0-4794-9963-E9BDA9FFADF1}.Debug|x64.Build.0 = Debug|x64
+		{887CCAEE-AFA0-4794-9963-E9BDA9FFADF1}.Debug|x86.ActiveCfg = Debug|x86
+		{887CCAEE-AFA0-4794-9963-E9BDA9FFADF1}.Debug|x86.Build.0 = Debug|x86
+		{887CCAEE-AFA0-4794-9963-E9BDA9FFADF1}.Release|x64.ActiveCfg = Release|x64
+		{887CCAEE-AFA0-4794-9963-E9BDA9FFADF1}.Release|x64.Build.0 = Release|x64
+		{887CCAEE-AFA0-4794-9963-E9BDA9FFADF1}.Release|x86.ActiveCfg = Release|x86
+		{887CCAEE-AFA0-4794-9963-E9BDA9FFADF1}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
