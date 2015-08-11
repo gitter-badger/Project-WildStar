@@ -40,7 +40,7 @@ namespace Framework.Cryptography
 
         ulong CalculateBaseKey()
         {
-            return keyValue1 * (keyValue2 * (keyValue1 - 0x502028AC11024130) + 9024) + 0x4282FFFAE72B3921;
+            return keyValue1 * (keyValue2 * (keyValue1 - 0x70C47ECE22461EA4) + 9165) + 0x7E6AF441C212B871;
         }
 
         ulong CalculateGatewayKey(byte[] gatewayTicket)

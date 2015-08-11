@@ -57,14 +57,14 @@ namespace AuthServer.Network
 
             var sHello = new Packet(ServerMessage.SHello);
 
-            sHello.Write(9024, 32);
+            sHello.Write(9165, 32);
             sHello.Write(0, 32);
             sHello.Write(0, 32);
             sHello.Write(0, 32);
             sHello.Write(0, 64);
             sHello.Write(0, 16);
             sHello.Write(3, 5);
-            sHello.Write(0x63DDB9B9, 32);
+            sHello.Write(0xBDD06089, 32);
             sHello.Write(0, 32);
             sHello.Write(0, 64);
             sHello.Write(0, 32);
