@@ -213,7 +213,7 @@ namespace AuthServer.Network.Packets
         {
             var s = "";
             var isLongString = Read<bool>(1);
-            var length = Read<ushort>(isLongString ? 15 : 7) << 1;
+            var length = Read<ushort>(isLongString ? 15 : 7);
 
             for (int i = 0; i < length; i++)
             {
