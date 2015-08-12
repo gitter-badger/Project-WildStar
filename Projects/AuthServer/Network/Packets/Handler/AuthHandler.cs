@@ -4,8 +4,6 @@
 using System;
 using AuthServer.Attributes;
 using AuthServer.Constants.Net;
-using Framework.Database;
-using Framework.Database.Auth;
 
 namespace AuthServer.Network.Packets.Handler
 {
@@ -47,7 +45,14 @@ namespace AuthServer.Network.Packets.Handler
 
                 var connectToRealm = new Packet(ServerMessage.ConnectToRealm);
 
-                // Data...
+                connectToRealm.Write(BitConverter.ToUInt32(new byte[] { 1, 0, 0, 127 }, 0), 32);
+                connectToRealm.Write(24000, 16);
+                connectToRealm.Write(0, 64);
+                connectToRealm.Write(0, 64);
+                connectToRealm.Write(0, 32);
+                connectToRealm.WriteWString("Multi-Emu");
+                connectToRealm.Write(0, 2);
+                connectToRealm.Write(0, 21);
 
                 session.Send(connectToRealm);
             }

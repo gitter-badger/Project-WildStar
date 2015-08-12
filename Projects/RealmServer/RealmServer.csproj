@@ -64,7 +64,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Attributes\RealmPacketAttribute.cs" />
+    <Compile Include="Constants\Net\ClientMessage.cs" />
+    <Compile Include="Constants\Net\ServerMessage.cs" />
+    <Compile Include="Network\Packets\Packet.cs" />
+    <Compile Include="Network\Packets\PacketHeader.cs" />
+    <Compile Include="Network\Packets\PacketManager.cs" />
+    <Compile Include="Network\RealmSession.cs" />
+    <Compile Include="Network\Server.cs" />
+    <Compile Include="RealmServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
