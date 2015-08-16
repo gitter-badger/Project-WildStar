@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D209AF89-F171-4D9B-BB49-09CEC2126852}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Framework</RootNamespace>
+    <AssemblyName>Framework</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\..\Build\Debug\x64\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>..\..\..\Build\Release\x64\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\..\Build\Debug\x86\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>..\..\..\Build\Release\x86\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Numerics" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Attributes\GlobalNetMessageAttribute.cs" />
+    <Compile Include="Constants\Net\GlobalClientMessage.cs" />
+    <Compile Include="Constants\Net\GlobalServerMessage.cs" />
+    <Compile Include="Constants\Realm\RealmStatus.cs" />
+    <Compile Include="Constants\Realm\RealmType.cs" />
+    <Compile Include="Cryptography\PacketCrypt.cs" />
+    <Compile Include="Database\Auth\Account.cs" />
+    <Compile Include="Database\Auth\Realm.cs" />
+    <Compile Include="Database\DB.cs" />
+    <Compile Include="Logging\IO\FileWriter.cs" />
+    <Compile Include="Logging\IO\PacketLog.cs" />
+    <Compile Include="Logging\Log.cs" />
+    <Compile Include="Logging\LogType.cs" />
+    <Compile Include="Misc\Config.cs" />
+    <Compile Include="Misc\Extensions\ArrayExtensions.cs" />
+    <Compile Include="Misc\Extensions\BinaryReaderExtensions.cs" />
+    <Compile Include="Misc\Extensions\BinaryWriterExtensions.cs" />
+    <Compile Include="Misc\Extensions\GenericExtensions.cs" />
+    <Compile Include="Misc\Extensions\PrimitiveExtensions.cs" />
+    <Compile Include="Misc\Extensions\StringExtensions.cs" />
+    <Compile Include="Misc\Helper.cs" />
+    <Compile Include="Network\ServerBase.cs" />
+    <Compile Include="Network\SessionBase.cs" />
+    <Compile Include="Packets\Base\ClientPacket.cs" />
+    <Compile Include="Packets\Base\IServerStruct.cs" />
+    <Compile Include="Packets\Base\Packet.cs" />
+    <Compile Include="Packets\Base\PacketHeader.cs" />
+    <Compile Include="Packets\Base\ServerPacket.cs" />
+    <Compile Include="Packets\Client\Misc\State1.cs" />
+    <Compile Include="Packets\Client\Misc\State2.cs" />
+    <Compile Include="Packets\Handlers\MiscHandler.cs" />
+    <Compile Include="Packets\Server\Misc\SHello.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Configs\AuthServer.conf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <Import Project="..\LappaORM\Lappa ORM\Lappa ORM.projitems" Label="Shared" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

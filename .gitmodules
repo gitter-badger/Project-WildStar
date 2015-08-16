@@ -1,0 +1,3 @@
+[submodule "Projects/Libraries/LappaORM"]
+	path = Projects/Libraries/LappaORM
+	url = git://github.com/Arctium-Software/LappaORM.git

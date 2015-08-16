@@ -1,7 +1,3 @@
-/*
-Date: 2015-07-30 20:18:31
-*/
-
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
@@ -10,10 +6,11 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `Accounts`;
 CREATE TABLE `Accounts` (
   `Id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `Email` varchar(255) NOT NULL DEFAULT '',
-  `LoginName` varchar(255) NOT NULL,
+  `Alias` varchar(255) NOT NULL DEFAULT '',
+  `Email` varchar(255) NOT NULL,
   `PasswordVerifier` varchar(256) NOT NULL,
   `Salt` varchar(16) NOT NULL,
+  `GatewayTicket` varchar(32) DEFAULT NULL,
   `Online` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -23,19 +20,21 @@ CREATE TABLE `Accounts` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for GameAccounts
+-- Table structure for Realms
 -- ----------------------------
-DROP TABLE IF EXISTS `GameAccounts`;
-CREATE TABLE `GameAccounts` (
+DROP TABLE IF EXISTS `Realms`;
+CREATE TABLE `Realms` (
   `Id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `AccountId` int(10) unsigned NOT NULL,
-  `Alias` varchar(255) CHARACTER SET latin1 DEFAULT '',
-  `Created` varchar(255) CHARACTER SET latin1 DEFAULT '',
-  PRIMARY KEY (`Id`,`AccountId`),
-  KEY `AccountId` (`AccountId`),
-  FOREIGN KEY (`AccountId`) REFERENCES `Accounts` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `Name` varchar(255) DEFAULT NULL,
+  `IP` varchar(255) DEFAULT '127.0.0.1',
+  `Port` smallint(5) unsigned NOT NULL DEFAULT '24000',
+  `Type` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `Status` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `Index` int(10) unsigned NOT NULL DEFAULT '1',
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
--- Records of GameAccounts
+-- Records of Realms
 -- ----------------------------
+INSERT INTO `Realms` VALUES ('1', 'Multi-Emu', '127.0.0.1', '24000', '0', '1', '0');
