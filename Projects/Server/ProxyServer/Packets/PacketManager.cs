@@ -52,6 +52,9 @@ namespace ProxyServer.Packets
 
                 await Task.Run(() => handlerObj.Read());
 
+                // Fix the position after the last read.
+                reader.Read(1);
+
                 if (handlerObj.IsReadComplete)
                     data.Item1.Invoke(null, new object[] { handlerObj, session });
                 else

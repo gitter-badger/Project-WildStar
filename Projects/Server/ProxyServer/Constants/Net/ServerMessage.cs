@@ -7,6 +7,6 @@ namespace ProxyServer.Constants.Net
     {
         Composite        = 0x06D,
         Redirect         = 0x3A9,
-        RedirectResponse = 0x537,
+        RedirectResponse = 0x538,
     }
 }

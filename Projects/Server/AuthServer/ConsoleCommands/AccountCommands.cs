@@ -36,7 +36,8 @@ namespace AuthServer.ConsoleCommands
                         Email = email,
                         Alias = alias,
                         PasswordVerifier = srp.V.ToHexString(),
-                        Salt = salt
+                        Salt = salt,
+                        GatewayTicket = ""
                     };
 
                     if (DB.Auth.Add(account))

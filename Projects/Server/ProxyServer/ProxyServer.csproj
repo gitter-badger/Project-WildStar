@@ -67,6 +67,7 @@
     <Compile Include="Attributes\NetMessageAttribute.cs" />
     <Compile Include="Constants\Net\ClientMessage.cs" />
     <Compile Include="Constants\Net\ServerMessage.cs" />
+    <Compile Include="Misc\ProxyConfig.cs" />
     <Compile Include="Network\Server.cs" />
     <Compile Include="Network\Session.cs" />
     <Compile Include="Packets\Client\Redirect\RedirectRequest.cs" />
@@ -76,7 +77,6 @@
     <Compile Include="Packets\Server\Redirect\RedirectResponse.cs" />
     <Compile Include="ProxyServer.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

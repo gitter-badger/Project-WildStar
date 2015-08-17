@@ -5,7 +5,7 @@ namespace ProxyServer.Constants.Net
 {
     enum ClientMessage : ushort
     {
-        Composite      = 0x22F,
-        RedirectRequest = 0x538,
+        Composite       = 0x22F,
+        RedirectRequest = 0x539,
     }
 }
