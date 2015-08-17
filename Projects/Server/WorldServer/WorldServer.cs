@@ -49,6 +49,7 @@ namespace WorldServer
 
                 Log.Normal($"Realm 'Id: {realm.Id}, IP: {realm.IP}, Port: {realm.Port}' loaded.");
 
+                // Set all accounts offline.
                 DB.Auth.UpdateAll<Account>(a => a.Online.Set(false));
 
                 using (var server = new Server(WorldConfig.BindIP, realm.Port))

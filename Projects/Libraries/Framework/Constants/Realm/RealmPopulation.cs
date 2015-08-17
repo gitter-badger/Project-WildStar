@@ -3,12 +3,11 @@
 
 namespace Framework.Constants.Realm
 {
-    public enum RealmStatus : byte
+    public enum RealmPopulation : byte
     {
-        Unknown = 0,
-        Offline = 1,
-        Down    = 2,
-        Standby = 3,
-        Up      = 4
+        Low    = 0,
+        Medium = 1,
+        High   = 2,
+        Full   = 3
     }
 }

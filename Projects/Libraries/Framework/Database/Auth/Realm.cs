@@ -9,12 +9,13 @@ namespace Framework.Database.Auth
     public class Realm : Entity
     {
         [AutoIncrement]
-        public uint Id            { get; set; }
-        public string Name        { get; set; }
-        public string IP          { get; set; }
-        public ushort Port        { get; set; }
-        public RealmType Type     { get; set; }
-        public RealmStatus Status { get; set; }
-        public uint Index         { get; set; } // 0 = default realm
+        public uint Id                    { get; set; }
+        public string Name                { get; set; }
+        public string IP                  { get; set; }
+        public ushort Port                { get; set; }
+        public RealmType Type             { get; set; }
+        public RealmStatus Status         { get; set; }
+        public RealmPopulation Population { get; set; }
+        public uint Index                 { get; set; } // 0 = default realm
     }
 }
