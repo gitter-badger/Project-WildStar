@@ -4,8 +4,10 @@
 using System;
 using System.Threading;
 using Framework.Database;
+using Framework.Database.Auth;
 using Framework.Logging;
 using Framework.Misc;
+using Lappa_ORM;
 using ProxyServer.Misc;
 using ProxyServer.Network;
 using ProxyServer.Packets;
@@ -33,6 +35,8 @@ namespace ProxyServer
 
             if (DB.Auth.Initialize(connString, ProxyConfig.AuthDBType))
             {
+                DB.Auth.Update<Account>(a => a.GatewayTicket.Set(""));
+
                 using (var server = new Server(ProxyConfig.BindIP, 23115))
                 {
                     PacketManager.DefineMessageHandler();

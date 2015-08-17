@@ -124,8 +124,13 @@ namespace AuthServer.Packets.Handler
         [AuthMessage(StsMessage.RequestGameToken)]
         public static void HandleAuthRequestGameToken(Packet packet, Session session)
         {
-            // Set account to online to mark it as valid for the redirect.
-            if (DB.Auth.Update<Account>(a => a.Id == session.Account.Id, a => a.Online.Set(true)))
+            var redirectData = new Redirect
+            {
+                AccountId = session.Account.Id,
+                IP = session.GetIPAddress()
+            };
+
+            if (DB.Auth.Add(redirectData))
             {
                 var reply = new Packet(StsReason.OK, packet.Header.Sequence);
 

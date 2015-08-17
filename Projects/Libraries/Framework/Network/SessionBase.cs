@@ -81,6 +81,13 @@ namespace Framework.Network
             return ipEndPoint != null ? ipEndPoint.Address + ":" + ipEndPoint.Port : "";
         }
 
+        public string GetIPAddress()
+        {
+            var ipEndPoint = client.RemoteEndPoint as IPEndPoint;
+
+            return ipEndPoint != null ? ipEndPoint.Address.ToString() : "";
+        }
+
         #region IDisposable Support
         private bool disposedValue = false;
 

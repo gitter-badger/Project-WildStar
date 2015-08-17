@@ -71,6 +71,7 @@
     <Compile Include="Cryptography\PacketCrypt.cs" />
     <Compile Include="Database\Auth\Account.cs" />
     <Compile Include="Database\Auth\Realm.cs" />
+    <Compile Include="Database\Auth\Redirect.cs" />
     <Compile Include="Database\DB.cs" />
     <Compile Include="Logging\IO\FileWriter.cs" />
     <Compile Include="Logging\IO\PacketLog.cs" />

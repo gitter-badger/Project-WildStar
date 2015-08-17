@@ -25,8 +25,11 @@ namespace ProxyServer.Packets.Handlers
         {
             var account = DB.Auth.Single<Account>(a => a.Email == redirectRequest.LoginName);
 
-            if (account != null && account.Online)
+            if (account != null && DB.Auth.Any<Framework.Database.Auth.Redirect>(r => r.AccountId == account.Id && r.IP == session.GetIPAddress()))
             {
+                // Delete the redirect state from database.
+                DB.Auth.Delete<Framework.Database.Auth.Redirect>(r => r.AccountId == account.Id && r.IP == session.GetIPAddress());
+
                 // Get the default realm.
                 var realm = DB.Auth.Single<Realm>(r => r.Index == 0);
 
@@ -41,7 +44,7 @@ namespace ProxyServer.Packets.Handlers
                     {
                         await session.Send(new RedirectResponse { Result = 0 });
 
-                        var redirect = new Redirect
+                        var redirect = new Server.Redirect.Redirect
                         {
                             IP            = BitConverter.ToUInt32(IPAddress.Parse(realm.IP).GetAddressBytes().Reverse().ToArray(), 0),
                             Port          = realm.Port,
