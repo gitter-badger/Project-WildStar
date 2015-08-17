@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Framework.Logging;
 
 namespace Framework.Network
 {
@@ -29,8 +30,9 @@ namespace Framework.Network
                 if (isRunning = listener.Server.IsBound)
                     new Thread(AcceptConnection).Start(200);
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error(ex.Message);
             }
         }
 

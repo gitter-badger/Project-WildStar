@@ -35,7 +35,7 @@ namespace ProxyServer
 
             if (DB.Auth.Initialize(connString, ProxyConfig.AuthDBType))
             {
-                DB.Auth.Update<Account>(a => a.GatewayTicket.Set(""));
+                DB.Auth.UpdateAll<Account>(a => a.GatewayTicket.Set(""));
 
                 using (var server = new Server(ProxyConfig.BindIP, 23115))
                 {

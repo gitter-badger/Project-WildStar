@@ -124,6 +124,8 @@ namespace AuthServer.Packets.Handler
         [AuthMessage(StsMessage.RequestGameToken)]
         public static void HandleAuthRequestGameToken(Packet packet, Session session)
         {
+            DB.Auth.Delete<Redirect>(r => r.AccountId == session.Account.Id);
+
             var redirectData = new Redirect
             {
                 AccountId = session.Account.Id,

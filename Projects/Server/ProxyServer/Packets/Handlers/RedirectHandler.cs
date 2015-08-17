@@ -4,12 +4,11 @@
 using System;
 using System.Linq;
 using System.Net;
-using Framework.Constants.Realm;
 using Framework.Database;
 using Framework.Database.Auth;
+using Framework.Logging;
 using Framework.Misc;
 using Framework.Misc.Extensions;
-using Lappa_ORM;
 using ProxyServer.Attributes;
 using ProxyServer.Constants.Net;
 using ProxyServer.Network;
@@ -23,12 +22,14 @@ namespace ProxyServer.Packets.Handlers
         [NetMessage(ClientMessage.RedirectRequest)]
         public static async void HandleRedirectRequest(RedirectRequest redirectRequest, Session session)
         {
+            Log.Debug($"Received redirect request from 'Client: {session.GetClientInfo()}, LoginName: {redirectRequest.LoginName}'.");
+
             var account = DB.Auth.Single<Account>(a => a.Email == redirectRequest.LoginName);
 
-            if (account != null && DB.Auth.Any<Framework.Database.Auth.Redirect>(r => r.AccountId == account.Id && r.IP == session.GetIPAddress()))
+            if (account != null && DB.Auth.Any<Framework.Database.Auth.Redirect>(r => r.AccountId == account.Id))
             {
                 // Delete the redirect state from database.
-                DB.Auth.Delete<Framework.Database.Auth.Redirect>(r => r.AccountId == account.Id && r.IP == session.GetIPAddress());
+                DB.Auth.Delete<Framework.Database.Auth.Redirect>(r => r.AccountId == account.Id);
 
                 // Get the default realm.
                 var realm = DB.Auth.Single<Realm>(r => r.Index == 0);
@@ -54,10 +55,14 @@ namespace ProxyServer.Packets.Handlers
 
                         await session.Send(redirect);
 
+                        Log.Debug($"'Client: {session.GetClientInfo()}' successfully redirected.");
+
                         return;
                     }
                 }
             }
+
+            Log.Debug($"Redirect for 'Client: {session.GetClientInfo()}' not possible.");
 
             // Close the connection for now.
             session.Dispose();
