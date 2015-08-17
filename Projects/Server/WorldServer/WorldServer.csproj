@@ -60,15 +60,25 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\ConsoleCommandAttribute.cs" />
+    <Compile Include="Attributes\NetMessageAttribute.cs" />
+    <Compile Include="ConsoleCommands\ConsoleCommandManager.cs" />
+    <Compile Include="Constants\Net\ClientMessage.cs" />
+    <Compile Include="Constants\Net\ServerMessage.cs" />
+    <Compile Include="Misc\WorldConfig.cs" />
     <Compile Include="Network\Server.cs" />
     <Compile Include="Network\Session.cs" />
+    <Compile Include="Packets\PacketManager.cs" />
     <Compile Include="WorldServer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Packets\" />
+    <Folder Include="Packets\Client\" />
+    <Folder Include="Packets\Handlers\" />
+    <Folder Include="Packets\Server\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
