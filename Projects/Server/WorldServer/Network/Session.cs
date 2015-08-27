@@ -37,9 +37,9 @@ namespace WorldServer.Network
 
             var sHello = new SHello
             {
-                BuildNumber = 9189,
+                BuildNumber = 9234,
                 ConnectionType = 11,
-                NetworkMessageCRC = 0xCB89D171
+                NetworkMessageCRC = 0xBA64F705
             };
 
             await Send(sHello);
