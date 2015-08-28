@@ -48,7 +48,7 @@ namespace AuthServer.Network
 
         public void OnConnection(object sender, SocketAsyncEventArgs e)
         {
-            if (e.BytesTransferred < 256 || e.BytesTransferred > 400)
+            if (e.BytesTransferred < 248 || e.BytesTransferred > 400)
             {
                 Log.Network("Wrong initialization packet.");
 
