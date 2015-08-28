@@ -45,6 +45,7 @@ CREATE TABLE `Realms` (
   `Port` smallint(5) unsigned NOT NULL DEFAULT '24000',
   `Type` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `Status` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `Population` tinyint(3) unsigned NOT NULL DEFAULT '0'
   `Index` int(10) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
