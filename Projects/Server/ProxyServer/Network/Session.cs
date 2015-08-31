@@ -37,7 +37,7 @@ namespace ProxyServer.Network
 
             var sHello = new SHello
             {
-                BuildNumber = 9234,
+                BuildNumber = 9287,
                 ConnectionType = 3,
                 NetworkMessageCRC = 0xBA64F705
             };
