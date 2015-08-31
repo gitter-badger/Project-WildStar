@@ -6,7 +6,7 @@ namespace WorldServer.Constants.Net
     enum ServerMessage : ushort
     {
         CharacterList = 0x111,
-        Composite     = 0x3AA,
-        Realmlist     = 0x6F2,
+        Composite     = 0x3B1,
+        Realmlist     = 0x6F9,
     }
 }
