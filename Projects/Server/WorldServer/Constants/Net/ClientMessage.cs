@@ -7,7 +7,7 @@ namespace WorldServer.Constants.Net
     {
         Composite        = 0x230,
         GatewayRequest   = 0x53D,
-        CharacterList    = 0x762,
-        RealmListChanged = 0x731,
+        CharacterList    = 0x765,
+        RealmListChanged = 0x734,
     }
 }

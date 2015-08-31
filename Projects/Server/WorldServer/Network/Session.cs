@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Framework.Constants.Net;
+using Framework.Database.Auth;
 using Framework.Logging;
 using Framework.Network;
 using Framework.Packets;
@@ -17,6 +18,8 @@ namespace WorldServer.Network
 {
     class Session : SessionBase
     {
+        public Account Account { get; set; }
+
         public Session(Socket clientSocket) : base(clientSocket) { }
 
         public override async void OnConnection(object sender, SocketAsyncEventArgs e)
@@ -66,7 +69,7 @@ namespace WorldServer.Network
 
                         if (pkt.Header.Message != (ushort)GlobalClientMessage.State1 && pkt.Header.Message != (ushort)GlobalClientMessage.State2)
                         {
-                            crypt.Decrypt(pkt.Data, pkt.Data.Length);
+                            Crypt.Decrypt(pkt.Data, pkt.Data.Length);
 
                             pkt.ReadMessage();
 
@@ -111,7 +114,7 @@ namespace WorldServer.Network
                 packet.Write();
                 packet.Packet.FinishData();
 
-                crypt.Encrypt(packet.Packet.Data, packet.Packet.Data.Length);
+                Crypt.Encrypt(packet.Packet.Data, packet.Packet.Data.Length);
 
                 packet.Packet.Finish((ushort)ServerMessage.Composite);
 

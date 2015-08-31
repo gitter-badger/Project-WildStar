@@ -118,17 +118,13 @@ namespace Framework.Packets
 
                 packedByte |= (byte)(((ulong)((1 << bitsToWrite) - 1) & val) << (shiftedBits & 0x1F));
 
-                writtenBits += bitsToWrite;
                 count -= bitsToWrite;
+                writtenBits += bitsToWrite;
 
                 shiftedBits = (bitsToWrite + shiftedBits) & 7;
 
                 if (shiftedBits == 0)
-                {
-                    writeStream.Write(packedByte);
-
-                    packedByte = 0;
-                }
+                    FlushServer();
 
                 val >>= bitsToWrite;
             }
@@ -147,7 +143,7 @@ namespace Framework.Packets
 
         public void Write(byte[] data) => writeStream.Write(data);
 
-        void FlushServer()
+        public void FlushServer()
         {
             writeStream.Write(packedByte);
 

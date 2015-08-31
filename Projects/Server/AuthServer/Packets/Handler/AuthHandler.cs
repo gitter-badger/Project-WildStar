@@ -134,13 +134,17 @@ namespace AuthServer.Packets.Handler
 
             if (DB.Auth.Add(redirectData))
             {
-                var reply = new Packet(StsReason.OK, packet.Header.Sequence);
+                // Reset gateway ticket and redirect.
+                if (DB.Auth.Update<Account>(a => a.Id == session.Account.Id, a => a.GatewayTicket.Set("")))
+                {
+                    var reply = new Packet(StsReason.OK, packet.Header.Sequence);
 
-                reply.Xml.WriteElementRoot("Reply");
+                    reply.Xml.WriteElementRoot("Reply");
 
-                reply.Xml.WriteElement("Token", "");
+                    reply.Xml.WriteElement("Token", "");
 
-                session.Send(reply);
+                    session.Send(reply);
+                }
             }
             else
                 session.Dispose();

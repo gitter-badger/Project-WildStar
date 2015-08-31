@@ -66,7 +66,7 @@ namespace ProxyServer.Network
 
                         if (pkt.Header.Message != (ushort)GlobalClientMessage.State1 && pkt.Header.Message != (ushort)GlobalClientMessage.State2)
                         {
-                            crypt.Decrypt(pkt.Data, pkt.Data.Length);
+                            Crypt.Decrypt(pkt.Data, pkt.Data.Length);
 
                             pkt.ReadMessage();
 
@@ -111,7 +111,7 @@ namespace ProxyServer.Network
                 packet.Write();
                 packet.Packet.FinishData();
 
-                crypt.Encrypt(packet.Packet.Data, packet.Packet.Data.Length);
+                Crypt.Encrypt(packet.Packet.Data, packet.Packet.Data.Length);
 
                 packet.Packet.Finish((ushort)ServerMessage.Composite);
 

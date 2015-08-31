@@ -72,14 +72,19 @@
     <Compile Include="Misc\WorldConfig.cs" />
     <Compile Include="Network\Server.cs" />
     <Compile Include="Network\Session.cs" />
+    <Compile Include="Packets\Client\Character\CharacterList.cs" />
+    <Compile Include="Packets\Client\Misc\GatewayRequest.cs" />
+    <Compile Include="Packets\Client\Misc\RealmListChanged.cs" />
+    <Compile Include="Packets\Handlers\CharacterHandler.cs" />
+    <Compile Include="Packets\Handlers\MiscHandler.cs" />
     <Compile Include="Packets\PacketManager.cs" />
+    <Compile Include="Packets\Server\Character\CharacterList.cs" />
+    <Compile Include="Packets\Server\Misc\RealmList.cs" />
+    <Compile Include="Packets\Structures\Realm\RealmListEntry.cs" />
+    <Compile Include="Packets\Structures\Realm\RealmMessageEntry.cs" />
     <Compile Include="WorldServer.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Packets\Client\" />
-    <Folder Include="Packets\Handlers\" />
-    <Folder Include="Packets\Server\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

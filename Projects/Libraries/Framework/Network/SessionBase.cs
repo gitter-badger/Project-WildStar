@@ -14,16 +14,17 @@ namespace Framework.Network
 {
     public abstract class SessionBase : IDisposable
     {
+        public PacketCrypt Crypt { get; set; }
+
         protected Socket client;
         protected ConcurrentQueue<Packet> packetQueue;
-        protected PacketCrypt crypt = null;
         protected byte[] dataBuffer = new byte[0x1000];
 
         public SessionBase(Socket clientSocket)
         {
             client = clientSocket;
             packetQueue = new ConcurrentQueue<Packet>();
-            crypt = new PacketCrypt();
+            Crypt = new PacketCrypt();
         }
 
         public void Accept()

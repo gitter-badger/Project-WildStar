@@ -7,6 +7,6 @@ namespace WorldServer.Constants.Net
     {
         CharacterList = 0x111,
         Composite     = 0x3B1,
-        Realmlist     = 0x6F9,
+        Realmlist     = 0x6FA,
     }
 }
