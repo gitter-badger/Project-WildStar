@@ -138,7 +138,8 @@ namespace Framework.Packets
             Write(isLongString, 1);
             Write(data.Length >> 1, isLongString ? 15 : 7);
 
-            writeStream.Write(data);
+            for (var i = 0; i < data.Length; i += 2)
+                Write(BitConverter.ToUInt16(data, i), 16);
         }
 
         public void Write(byte[] data) => writeStream.Write(data);
