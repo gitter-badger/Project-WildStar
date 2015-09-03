@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Framework.Constants.Net;
 using Framework.Cryptography;
 using Framework.Logging;
 using Framework.Packets;
@@ -63,7 +64,7 @@ namespace Framework.Network
 
                 client.SendAsync(socketEventargs);
 
-                PacketLog.Write<Packet>(0xFFFF, data, data.Length, client.RemoteEndPoint as IPEndPoint);
+                PacketLog.Write<GlobalServerMessage>(0xFFFF, data, data.Length, client.RemoteEndPoint as IPEndPoint);
             }
             catch
             {

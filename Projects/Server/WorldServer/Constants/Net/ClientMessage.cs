@@ -5,9 +5,10 @@ namespace WorldServer.Constants.Net
 {
     enum ClientMessage : ushort
     {
-        Composite        = 0x230,
-        GatewayRequest   = 0x53D,
-        CharacterList    = 0x765,
-        RealmListChanged = 0x734,
+        Composite            = 0x230,
+        GatewayRequest       = 0x540,
+        CharacterList        = 0x768,
+        RealmListChanged     = 0x737,
+        RequestRealmTransfer = 0x248,
     }
 }
