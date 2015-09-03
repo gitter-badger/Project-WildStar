@@ -74,6 +74,8 @@ namespace ProxyServer.Network
                             receivedBytes -= 6;
 
                             Buffer.BlockCopy(dataBuffer, (int)pkt.Header.Size + 6, dataBuffer, 0, receivedBytes);
+
+                            PacketLog.Write<ClientMessage>(pkt.Header.Message, pkt.Data, pkt.Data.Length, client.RemoteEndPoint as IPEndPoint);
                         }
                         else
                             Buffer.BlockCopy(dataBuffer, (int)pkt.Header.Size, dataBuffer, 0, receivedBytes);
@@ -101,19 +103,23 @@ namespace ProxyServer.Network
                 packetQueue.TryDequeue(out packet);
 
             await PacketManager.Invoke(packet, this);
-            await PacketLog.Write<ClientMessage>(packet.Data, packet.Data.Length, client.RemoteEndPoint as IPEndPoint);
         }
 
         public override async Task Send(ServerPacket packet)
         {
             try
             {
-                packet.Write();
-                packet.Packet.FinishData();
+                await Task.Run(() =>
+                {
+                    packet.Write();
+                    packet.Packet.FinishData();
 
-                Crypt.Encrypt(packet.Packet.Data, packet.Packet.Data.Length);
+                    Crypt.Encrypt(packet.Packet.Data, packet.Packet.Data.Length);
 
-                packet.Packet.Finish((ushort)ServerMessage.Composite);
+                    packet.Packet.Finish((ushort)ServerMessage.Composite);
+                });
+
+                PacketLog.Write<ServerMessage>(packet.Packet.Header.Message, packet.Packet.Data, packet.Packet.Data.Length, client.RemoteEndPoint as IPEndPoint);
 
                 var socketEventargs = new SocketAsyncEventArgs();
 
@@ -125,8 +131,6 @@ namespace ProxyServer.Network
                 socketEventargs.SocketFlags = SocketFlags.None;
 
                 client.SendAsync(socketEventargs);
-
-                await PacketLog.Write<ServerMessage>(packet.Packet.Data, packet.Packet.Data.Length, client.RemoteEndPoint as IPEndPoint);
             }
             catch
             {

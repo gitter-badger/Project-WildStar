@@ -48,7 +48,7 @@ namespace Framework.Network
 
         public abstract Task Send(ServerPacket packet);
 
-        public async void SendRaw(byte[] data)
+        public void SendRaw(byte[] data)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace Framework.Network
 
                 client.SendAsync(socketEventargs);
 
-                await PacketLog.Write<Packet>(data, data.Length, client.RemoteEndPoint as IPEndPoint);
+                PacketLog.Write<Packet>(0xFFFF, data, data.Length, client.RemoteEndPoint as IPEndPoint);
             }
             catch
             {

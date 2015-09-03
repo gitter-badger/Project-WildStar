@@ -18,7 +18,7 @@ namespace Framework.Logging
             logger = new FileWriter(directory, file);
         }
 
-        public static async Task Write<T>(byte[] data, int length, EndPoint remote)
+        public static async void Write<T>(ushort netMessage, byte[] data, int length, EndPoint remote)
         {
             Func<Task> write = async delegate
             {
@@ -30,6 +30,10 @@ namespace Framework.Logging
                 sb.AppendLine($"Time: {DateTime.Now}");
                 sb.AppendLine($"Type: {typeof(T).Name}");
 
+                if (Enum.IsDefined(typeof(T), netMessage))
+                    sb.AppendLine(string.Format("Name: {0}", Enum.GetName(typeof(T), netMessage)));
+
+                sb.AppendLine($"Value: 0x{netMessage:X} ({netMessage})");
                 sb.AppendLine($"Length: {length}");
 
                 sb.AppendLine("|----------------------------------------------------------------|");
