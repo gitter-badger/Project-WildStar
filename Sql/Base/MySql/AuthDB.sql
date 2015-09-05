@@ -53,7 +53,7 @@ CREATE TABLE `Realms` (
 -- ----------------------------
 -- Records of Realms
 -- ----------------------------
-INSERT INTO `Realms` VALUES ('1', 'Multi-Emu', '127.0.0.1', '24000', '0', '1', '0');
+INSERT INTO `Realms` VALUES ('1', 'Arctium Emulation', '127.0.0.1', '24000', '0', '1', '0');
 
 -- ----------------------------
 -- Table structure for Redirects
