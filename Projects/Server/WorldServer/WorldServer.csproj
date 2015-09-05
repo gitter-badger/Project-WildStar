@@ -75,11 +75,13 @@
     <Compile Include="Packets\Client\Character\CharacterList.cs" />
     <Compile Include="Packets\Client\Misc\GatewayRequest.cs" />
     <Compile Include="Packets\Client\Misc\RealmListChanged.cs" />
+    <Compile Include="Packets\Client\Misc\RequestRealmTransfer.cs" />
     <Compile Include="Packets\Handlers\CharacterHandler.cs" />
     <Compile Include="Packets\Handlers\MiscHandler.cs" />
     <Compile Include="Packets\PacketManager.cs" />
     <Compile Include="Packets\Server\Character\CharacterList.cs" />
     <Compile Include="Packets\Server\Misc\RealmList.cs" />
+    <Compile Include="Packets\Server\Misc\RealmTransfer.cs" />
     <Compile Include="Packets\Structures\Realm\RealmListEntry.cs" />
     <Compile Include="Packets\Structures\Realm\RealmMessageEntry.cs" />
     <Compile Include="WorldServer.cs" />

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Multi-Emu.
+﻿// Copyright (c) Arctium Emulation.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -47,25 +47,29 @@ namespace Framework.Misc
         public static void PrintHeader(string serverName)
         {
 
-            Log.Init(@"_____________________WildStar_____________________");
-            Log.Init(@"___  ___      _ _   _        _____                ");
-            Log.Init(@"|  \/  |     | | | (_)      |  ___|               ");
-            Log.Init(@"| .  . |_   _| | |_ _ ______| |__ _ __ ___  _   _ ");
-            Log.Init(@"| |\/| | | | | | __| |______|  __| '_ ` _ \| | | |");
-            Log.Init(@"| |  | | |_| | | |_| |      | |__| | | | | | |_| |");
-            Log.Init(@"\_|  |_/\__,_|_|\__|_|      \____/_| |_| |_|\__,_|");
+            Log.Init(@"_________________WildStar________________");
+            Log.Init(@"                   _   _                 ");
+            Log.Init(@"    /\            | | (_)                ");
+            Log.Init(@"   /  \   _ __ ___| |_ _ _   _ _ __ ___  ");
+            Log.Init(@"  / /\ \ | '__/ __| __| | | | | '_ ` _ \ ");
+            Log.Init(@" / ____ \| | | (__| |_| | |_| | | | | | |");
+            Log.Init(@"/_/    \_\_|  \___|\__|_|\__,_|_| |_| |_|");
+            Log.Init(@"           _                             ");
+            Log.Init(@"          |_._ _   | __|_ o _._          ");
+            Log.Init(@"          |_| | |_||(_||_ |(_| |         ");
+            Log.Init("");
 
             var sb = new StringBuilder();
 
-            sb.Append("__________________________________________________");
+            sb.Append("_________________________________________");
 
-            var nameStart = (50 - serverName.Length) / 2;
+            var nameStart = (42 - serverName.Length) / 2;
 
             sb.Insert(nameStart, serverName);
             sb.Remove(nameStart + serverName.Length, serverName.Length);
 
             Log.Init(sb.ToString());
-            Log.Init($"{"www.multi-emu.com", 33}");
+            Log.Init($"{"www.arctium-emulation.com",33}");
 
             Log.Message();
             Log.Normal($"Starting Project WildStar {serverName}...");

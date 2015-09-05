@@ -1,4 +1,4 @@
-﻿// Copyright (c) Multi-Emu.
+﻿// Copyright (c) Arctium Emulation.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -41,7 +41,7 @@ namespace WorldServer.ConsoleCommands
             {
                 Thread.Sleep(1);
 
-                Log.Normal("Multi-Emu WorldServer >> ");
+                Log.Normal("Project WildStar WorldServer >> ");
 
                 var line = Console.ReadLine().Split(new string[] { " " }, StringSplitOptions.None);
 
