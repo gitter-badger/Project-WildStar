@@ -79,6 +79,7 @@
     <Compile Include="Packets\Handlers\CharacterHandler.cs" />
     <Compile Include="Packets\Handlers\MiscHandler.cs" />
     <Compile Include="Packets\PacketManager.cs" />
+    <Compile Include="Packets\Server\Account\AccountEntitlementUpdate.cs" />
     <Compile Include="Packets\Server\Character\CharacterList.cs" />
     <Compile Include="Packets\Server\Misc\RealmList.cs" />
     <Compile Include="Packets\Server\Misc\RealmTransfer.cs" />

@@ -1,19 +1,20 @@
-/*
-Navicat MySQL Data Transfer
-
-Source Server         : remote
-Source Server Version : 50544
-Source Host           : localhost:3306
-Source Database       : Auth
-
-Target Server Type    : MYSQL
-Target Server Version : 50544
-File Encoding         : 65001
-
-Date: 2015-08-17 12:43:53
-*/
-
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for AccountEntitlements
+-- ----------------------------
+DROP TABLE IF EXISTS `AccountEntitlements`;
+CREATE TABLE `AccountEntitlements` (
+  `AccountId` int(10) unsigned NOT NULL,
+  `Id` int(10) unsigned NOT NULL,
+  `Value` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`AccountId`),
+  FOREIGN KEY (`AccountId`) REFERENCES `Accounts` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of AccountEntitlements
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for Accounts
@@ -45,7 +46,7 @@ CREATE TABLE `Realms` (
   `Port` smallint(5) unsigned NOT NULL DEFAULT '24000',
   `Type` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `Status` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `Population` tinyint(3) unsigned NOT NULL DEFAULT '0'
+  `Population` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `Index` int(10) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
@@ -53,7 +54,7 @@ CREATE TABLE `Realms` (
 -- ----------------------------
 -- Records of Realms
 -- ----------------------------
-INSERT INTO `Realms` VALUES ('1', 'Arctium Emulation', '127.0.0.1', '24000', '0', '1', '0');
+INSERT INTO `Realms` VALUES ('1', 'Project WildStar', '127.0.0.1', '24000', '0', '1', '0', '0');
 
 -- ----------------------------
 -- Table structure for Redirects
@@ -63,7 +64,7 @@ CREATE TABLE `Redirects` (
   `AccountId` int(10) unsigned NOT NULL,
   `IP` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`AccountId`),
-  CONSTRAINT `Redirects_ibfk_1` FOREIGN KEY (`AccountId`) REFERENCES `Accounts` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (`AccountId`) REFERENCES `Accounts` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------

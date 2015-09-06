@@ -3,6 +3,7 @@
 
 using AuthServer.Attributes;
 using AuthServer.Cryptography;
+using Framework.Constants.Account;
 using Framework.Database;
 using Framework.Database.Auth;
 using Framework.Logging;
@@ -33,15 +34,26 @@ namespace AuthServer.ConsoleCommands
 
                     var account = new Account
                     {
-                        Email = email,
-                        Alias = alias,
+                        Id               = DB.Auth.GetAutoIncrementValue<Account, uint>(),
+                        Email            = email,
+                        Alias            = alias,
                         PasswordVerifier = srp.V.ToHexString(),
-                        Salt = salt,
-                        GatewayTicket = ""
+                        Salt             = salt,
+                        GatewayTicket    = ""
                     };
 
                     if (DB.Auth.Add(account))
+                    {
                         Log.Normal($"Account 'Email: {email}, Alias: {alias}' successfully created.");
+
+                        // Unlock 10 more character slots.
+                        DB.Auth.Add(new AccountEntitlement
+                        {
+                            AccountId = account.Id,
+                            Id        = (uint)Entitlement.BaseCharacterSlots,
+                            Value     = 10
+                        });
+                    }
                 }
                 else
                     Log.Error($"Account 'Email: {email}' or 'Alias: {alias}' already in database.");

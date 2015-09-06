@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\GlobalNetMessageAttribute.cs" />
+    <Compile Include="Constants\Account\Entitlement.cs" />
     <Compile Include="Constants\Net\GlobalClientMessage.cs" />
     <Compile Include="Constants\Net\GlobalServerMessage.cs" />
     <Compile Include="Constants\Realm\RealmPopulation.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Constants\Realm\RealmType.cs" />
     <Compile Include="Cryptography\PacketCrypt.cs" />
     <Compile Include="Database\Auth\Account.cs" />
+    <Compile Include="Database\Auth\AccountEntitlement.cs" />
     <Compile Include="Database\Auth\Realm.cs" />
     <Compile Include="Database\Auth\Redirect.cs" />
     <Compile Include="Database\DB.cs" />

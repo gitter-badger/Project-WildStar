@@ -12,7 +12,7 @@ namespace WorldServer.Packets.Server.Misc
         public bool SubscriptionExpired    { get; set; }
         public uint GameTimeHoursRemaining { get; set; }
 
-        //public RealmTransfer() : base(ServerMessage.RealmTransfer) { }
+        public RealmTransfer() : base(ServerMessage.RealmTransfer) { }
 
         public override void Write()
         {
